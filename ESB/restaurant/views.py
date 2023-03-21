@@ -1,5 +1,7 @@
 from django.shortcuts import render
 
+from restaurant.models import Restaurant,RestaurantCategory
+
 def index(request):
     context = {
         'title': 'NRG'
@@ -8,9 +10,9 @@ def index(request):
 
 def restaurant(request):
     context = {
-        'title': 'restaurant'
+        'title': 'restaurant',
+        'categories': RestaurantCategory.objects.all(),
+        'restaurant': Restaurant.objects.all(),
     }
     return render(request, 'restaurant/restaurant.html',context)
 
-def test_context(request):
-    return render(request, '')
