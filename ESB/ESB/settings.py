@@ -80,10 +80,10 @@ WSGI_APPLICATION = 'ESB.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ESBNRG',
-        'USER': 'artibuk',
+        'NAME': 'admin',
+        'USER': 'admin',
         'PASSWORD': '134685',
-        'HOST': 'localhost',
+        'HOST': '10.201.0.14',
         'PORT': '5432',
     }
 }

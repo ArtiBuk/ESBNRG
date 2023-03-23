@@ -21,9 +21,10 @@ class Restaurant(models.Model):
     short_description = models.CharField(max_length=64, blank=True, verbose_name='Короткое описание')
     category = models.ForeignKey(RestaurantCategory, on_delete=models.PROTECT, verbose_name='Категория ресторана')
     city = models.CharField(max_length=10, blank=False,choices=CityChoise.choices, verbose_name='Город')
-    adress = models.CharField(max_length=128, verbose_name='Адрес') 
+    adress = models.CharField(max_length=128, verbose_name='Адресc') 
     class Meta:
         verbose_name_plural = 'Заведения'
+        unique_together = ('name', 'adress')
     
     def __str__(self):
-        return f'{self.name} | {self.category.name}'
+        return f'{self.name} | {self.city} | {self.category.name}'
