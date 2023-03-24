@@ -11,10 +11,14 @@
 
             <div class="col-lg-3">
 
-                <h1 class="my-4">Store</h1>
+                <h1 class="my-4">Nordrytail group</h1>
                 <div class="list-group">
+                    <a href={% url 'restaurant:index' %}>Все категории</a>
                     {% for category in categories %}
-                        <a href="#" class="list-group-item">{{category.name}}</a>
+                        <a href="{% url 'restaurant:category' category.id %}" 
+                        class="list-group-item">
+                        {{category.name}}
+                    </a>
                     {% endfor %}
                 </div>
 
@@ -99,7 +103,7 @@
 {% block footer %}
     <footer class="py-5 bg-dark">
         <div class="container">
-            <p class="m-0 text-center text-white">Copyright &copy; Store 2021</p>
+            <p class="m-0 text-center text-white">Nordrytail group</p>
         </div>
         <!-- /.container -->
     </footer>

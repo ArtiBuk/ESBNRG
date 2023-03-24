@@ -1,0 +1,69 @@
+{% extends 'tochki/base.html' %}
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'css/products.css' %}" rel="stylesheet">
+    <link href="{% static 'css/report.css' %}" rel="stylesheet">
+{% endblock  %}
+
+{% block content %}
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-lg-4">
+                <a id="start-purchase-link" href="{% url 'tochki:index' %}">
+                    <button id="back-purchase-btn" type="button" class="btn btn-lg">
+                        Назад
+                    </button>
+                </a>
+                <h1 class="my-5">{{ title }}:</h1>
+            </div>
+            <div class="container-fluid">
+                <table class="table table-striped table-bordered table-hover align-middle">
+                    <caption>{{ title }}:</caption>
+                    <thead class="thead-dark">
+                      <tr>
+                        <th>Дата: {{day | date:"d F"}}</th>
+                        <th scope="col">Выручка</th>
+                        <th scope="col">Количество чеков</th>
+                        <th scope="col">Средний чек</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in page_obj %}
+                        <tr>
+                            <th scope="row" {% if report.revenue < 10000 %}class="table-danger"{% endif %} vertical-align: middle;>{{report.date | date:"H:i"}}</th>
+                            <td {% if report.revenue < 10000 %}class="table-danger"{% endif %}>{{report.revenue}}</td>
+                            <td {% if report.revenue < 10000 %}class="table-danger"{% endif %}>{{report.number_of_checks}}</td>
+                            <td {% if report.revenue < 10000 %}class="table-danger"{% endif %}>{% widthratio report.revenue report.number_of_checks 1%}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item {% if number_day <= 1 %} disabled {% endif %}">
+                            <a class="page-link"
+                            href="{% if number_day != 1 %} {{ number_day | add:-1 }} {% else %}  {% endif %}">
+                            Назад</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link"
+                            href="{{ number_day | add:1 }}">
+                            Следующая</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endblock  %}
+
+{% block footer %}
+    <footer class="py-5 bg-dark">
+        <div class="container">
+            <p class="m-0 text-center text-white">by ArtiBuk</p>
+        </div>
+    </footer>
+{% endblock %}
