@@ -31,11 +31,12 @@ class UserRegistrationForm(UserCreationForm):
 class UserProfileForm(UserChangeForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'readonly': True}))
     email = forms.CharField(widget=forms.EmailInput(attrs={'readonly': True}))
+    access_rights = forms.CharField(widget=forms.TextInput(attrs={'readonly': True}))
     image = forms.ImageField(widget=forms.FileInput(), required=False)
     
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'image')
+        fields = ('username', 'email', 'first_name', 'last_name', 'image', 'access_rights')
         
     def __init__(self, *args, **kwargs):
         super(UserProfileForm, self).__init__(*args, **kwargs)

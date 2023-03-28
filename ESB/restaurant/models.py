@@ -1,9 +1,12 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from user.models import RightUser
 
 class RestaurantCategory(models.Model):
     name = models.CharField(max_length=64,unique=True,verbose_name='Название категории')
     short_description = models.CharField(max_length=64,blank=True,verbose_name='Краткое описание')
+    perm_grup_for_category = models.ManyToManyField(RightUser, verbose_name='Группы прав')
+    
     class Meta:
         verbose_name_plural = 'Категории ресторанов'
     
@@ -21,7 +24,9 @@ class Restaurant(models.Model):
     short_description = models.CharField(max_length=64, blank=True, verbose_name='Короткое описание')
     category = models.ForeignKey(RestaurantCategory, on_delete=models.PROTECT, verbose_name='Категория ресторана')
     city = models.CharField(max_length=10, blank=False,choices=CityChoise.choices, verbose_name='Город')
-    adress = models.CharField(max_length=128, verbose_name='Адресc') 
+    adress = models.CharField(max_length=128, verbose_name='Адресc')
+    perm_grup_fo = models.ManyToManyField(RightUser, verbose_name='Группы прав')
+
     class Meta:
         verbose_name_plural = 'Заведения'
         unique_together = ('name', 'adress')

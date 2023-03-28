@@ -58,7 +58,7 @@
                     {% for restaurant in restaurant %}
                         <div class="col-lg-4 col-md-6 mb-4">
                             <div class="card h-100">
-                                <a href="#">
+                                <a href="{% url 'restaurant:report' restaurant.id %}">
                                     <img class="card-img-top"
                                         src="/media/{{restaurant.image}}"
                                         alt="">

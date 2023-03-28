@@ -25,3 +25,12 @@ def restaurant(request,category_id=None):
         })
     return render(request, 'restaurant/restaurant.html',context)
 
+def report(request,restaurant_id):
+    context = {
+        'title' : Restaurant.objects.get(id = restaurant_id).name,
+        'category': Restaurant.objects.get(id = restaurant_id).category,
+        'city' : Restaurant.objects.get(id = restaurant_id).city,
+        'address' : Restaurant.objects.get(id = restaurant_id).adress
+    }
+    return render(request, 'restaurant/report.html',context)
+

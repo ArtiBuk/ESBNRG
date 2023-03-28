@@ -1,8 +1,9 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import auth, messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,permission_required
 from user.forms import UserLoginForm,UserRegistrationForm,UserProfileForm
+
 
 def login(request):
     if request.method == 'POST':
@@ -11,9 +12,11 @@ def login(request):
             username = request.POST['username']
             password = request.POST['password']
             user = auth.authenticate(username=username,password=password)
-            if user and user.is_active:
+            if user and user.is_active and user.is_staff:
                 auth.login(request,user)
                 return HttpResponseRedirect(reverse('index'))
+            else:
+                messages.error(request,'Ваш аккаунт еще не был подтвержден администрацией сайта')
     else:
         form = UserLoginForm()
     context = {'form': form}
