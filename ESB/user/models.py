@@ -13,7 +13,7 @@ class RightUser(models.Model):
   
 class User(AbstractUser):
     image = models.ImageField(upload_to='user_images', blank=True, verbose_name='Аватарка')
-    access_rights = models.ForeignKey(RightUser, on_delete=models.PROTECT, verbose_name='Права доступа пользователя',blank=True)
+    access_rights = models.ForeignKey(RightUser, on_delete=models.PROTECT, verbose_name='Права доступа пользователя',blank=True,default=25)
     class Meta:
         verbose_name_plural = 'Пользователи'
     def __str__(self):
