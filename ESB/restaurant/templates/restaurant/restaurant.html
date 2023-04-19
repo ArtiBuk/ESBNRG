@@ -8,9 +8,7 @@
     <div class="container">
 
         <div class="row">
-
             <div class="col-lg-3">
-
                 <h1 class="my-4">Nordrytail group</h1>
                 <div class="list-group">
                     <a href={% url 'restaurant:index' %}>Все категории</a>
@@ -21,12 +19,9 @@
                     </a>
                     {% endfor %}
                 </div>
-
             </div>
             <!-- /.col-lg-3 -->
-
             <div class="col-lg-9">
-
                 <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel">
                     <ol class="carousel-indicators">
                         <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
@@ -78,25 +73,42 @@
                         </div>
                     {% endfor %}
                 </div>
-
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        {% if restaurant.has_previous %}
                         <li class="page-item">
-                            <a class="page-link" href="#">Next</a>
+                            <a class="page-link" href="?page={{ restaurant.previous_page_number }}">Предыдущая</a>
                         </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Предыдущая</a>
+                        </li>
+                        {% endif %}
+                        {% for i in restaurant.paginator.page_range %}
+                        {% if restaurant.number == i %}
+                        <li class="page-item active" aria-current="page">
+                            <span class="page-link">{{ i }}<span class="sr-only">(current)</span></span>
+                        </li>
+                        {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                        {% if restaurant.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ restaurant.next_page_number }}">Следующая</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Следующая</a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </nav>
-
+                
             </div>
-
         </div>
-
     </div>
 {% endblock  %}
 
