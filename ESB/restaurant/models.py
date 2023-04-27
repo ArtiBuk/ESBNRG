@@ -61,19 +61,18 @@ class Report(models.Model):
     department = models.ForeignKey(
         Restaurant, on_delete=models.PROTECT, verbose_name='Наименование ресторана')
     data = models.DateField(verbose_name='Дата')
-    number_week = models.IntegerField(max_length=4, verbose_name='№ недели')
+    number_week = models.IntegerField(verbose_name='№ недели')
     weekdays = models.CharField(max_length=10,
                                 choices=WeekDayChoise.choices, verbose_name='День недели')
     revenue = models.DecimalField(
         max_digits=12, decimal_places=2, verbose_name='Выручка')
     cost_price = models.DecimalField(
         max_digits=12, decimal_places=2, verbose_name='Себестоимость')
-    number_of_checks = models.IntegerField(
-        max_length=4, verbose_name='Количество чеков')
+    number_of_checks = models.IntegerField(verbose_name='Количество чеков')
 
     class Meta:
         verbose_name_plural = 'Данные для отчетов'
-        unique_together = ('department', 'data', 'number_week')
+        unique_together = ('department', 'data')
 
     def __str__(self):
         return f'{self.department} | {self.data}'

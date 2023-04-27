@@ -1,1 +1,186 @@
-[{"model": "user.rightuser", "pk": 1, "fields": {"name": "Административно управленческий персонал", "where_is_access": "Везде"}}, {"model": "user.rightuser", "pk": 2, "fields": {"name": "Операционный директор ФАСТФУДОВ", "where_is_access": "Все фастфуды"}}, {"model": "user.rightuser", "pk": 3, "fields": {"name": "Операционный директор РЕСТОРАНОВ", "where_is_access": "Все рестораны полного цикла"}}, {"model": "user.rightuser", "pk": 4, "fields": {"name": "Операционный директор ДЕТСКИХ ЦЕНТРОВ", "where_is_access": "Все детские центры"}}, {"model": "user.rightuser", "pk": 5, "fields": {"name": "Операционный директор ХОСТЕЛОВ", "where_is_access": "Все хостелы"}}, {"model": "user.rightuser", "pk": 6, "fields": {"name": "Управляющий ПДТ", "where_is_access": "Папа Джонс Талнах"}}, {"model": "user.rightuser", "pk": 7, "fields": {"name": "Управляющий Норильск", "where_is_access": "Ресторан Норильск"}}, {"model": "user.rightuser", "pk": 8, "fields": {"name": "Управляющий Нордик", "where_is_access": "Нордик"}}, {"model": "user.rightuser", "pk": 11, "fields": {"name": "Управляющий ПДН", "where_is_access": "Папа Джонс Норильск"}}, {"model": "user.rightuser", "pk": 12, "fields": {"name": "Управляющий КДН", "where_is_access": "Carl's Jr Норильск"}}, {"model": "user.rightuser", "pk": 13, "fields": {"name": "Управляющий КДТ", "where_is_access": "Carl's Jr Талнах"}}, {"model": "user.rightuser", "pk": 14, "fields": {"name": "Управляющий Чайхона Талнах", "where_is_access": "Чайхона Талнах"}}, {"model": "user.rightuser", "pk": 15, "fields": {"name": "Управляющий Чайхона Дудинка", "where_is_access": "Чайхона Дудинка"}}, {"model": "user.rightuser", "pk": 16, "fields": {"name": "Управляющий Кебаб Клаб", "where_is_access": "Кебаб Клаб Норильск"}}, {"model": "user.rightuser", "pk": 17, "fields": {"name": "Управляющий Пепела", "where_is_access": "Пепела"}}, {"model": "user.rightuser", "pk": 18, "fields": {"name": "Управляющий ФХН", "where_is_access": "Фуд Холл Норильск"}}, {"model": "user.rightuser", "pk": 19, "fields": {"name": "Управляющий ФХТ", "where_is_access": "Фуд Холл Талнах"}}, {"model": "user.rightuser", "pk": 20, "fields": {"name": "Управляющий Смоки", "where_is_access": "Смоки Каейркан"}}, {"model": "user.rightuser", "pk": 21, "fields": {"name": "Управляющий Фабрика Вкуса", "where_is_access": "Фабрика Вкуса"}}, {"model": "user.rightuser", "pk": 22, "fields": {"name": "Управляющий ДСН", "where_is_access": "G-sushi Норильск"}}, {"model": "user.rightuser", "pk": 23, "fields": {"name": "Управляющий ДСТ", "where_is_access": "G-sushi Талнах"}}, {"model": "user.rightuser", "pk": 24, "fields": {"name": "Управляющий Нордлэнд", "where_is_access": "Нордлэнд"}}, {"model": "user.rightuser", "pk": 25, "fields": {"name": "Никаких", "where_is_access": "Нигде"}}]
+[
+    {
+        "model": "user.rightuser",
+        "pk": 1,
+        "fields": {
+            "name": "Административно управленческий персонал",
+            "where_is_access": "Везде"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 2,
+        "fields": {
+            "name": "Операционный директор ФАСТФУДОВ",
+            "where_is_access": "Все фастфуды"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 3,
+        "fields": {
+            "name": "Операционный директор РЕСТОРАНОВ",
+            "where_is_access": "Все рестораны полного цикла"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 4,
+        "fields": {
+            "name": "Операционный директор ДЕТСКИХ ЦЕНТРОВ",
+            "where_is_access": "Все детские центры"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 5,
+        "fields": {
+            "name": "Операционный директор ХОСТЕЛОВ",
+            "where_is_access": "Все хостелы"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 6,
+        "fields": {
+            "name": "Управляющий ПДТ",
+            "where_is_access": "Папа Джонс Талнах"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 7,
+        "fields": {
+            "name": "Управляющий Норильск",
+            "where_is_access": "Ресторан Норильск"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 8,
+        "fields": {
+            "name": "Управляющий Нордик",
+            "where_is_access": "Нордик"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 11,
+        "fields": {
+            "name": "Управляющий ПДН",
+            "where_is_access": "Папа Джонс Норильск"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 12,
+        "fields": {
+            "name": "Управляющий КДН",
+            "where_is_access": "Carl's Jr Норильск"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 13,
+        "fields": {
+            "name": "Управляющий КДТ",
+            "where_is_access": "Carl's Jr Талнах"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 14,
+        "fields": {
+            "name": "Управляющий Чайхона Талнах",
+            "where_is_access": "Чайхона Талнах"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 15,
+        "fields": {
+            "name": "Управляющий Чайхона Дудинка",
+            "where_is_access": "Чайхона Дудинка"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 16,
+        "fields": {
+            "name": "Управляющий Кебаб Клаб",
+            "where_is_access": "Кебаб Клаб Норильск"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 17,
+        "fields": {
+            "name": "Управляющий Пепела",
+            "where_is_access": "Пепела"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 18,
+        "fields": {
+            "name": "Управляющий ФХН",
+            "where_is_access": "Фуд Холл Норильск"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 19,
+        "fields": {
+            "name": "Управляющий ФХТ",
+            "where_is_access": "Фуд Холл Талнах"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 20,
+        "fields": {
+            "name": "Управляющий Смоки",
+            "where_is_access": "Смоки Каейркан"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 21,
+        "fields": {
+            "name": "Управляющий Фабрика Вкуса",
+            "where_is_access": "Фабрика Вкуса"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 22,
+        "fields": {
+            "name": "Управляющий ДСН",
+            "where_is_access": "G-sushi Норильск"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 23,
+        "fields": {
+            "name": "Управляющий ДСТ",
+            "where_is_access": "G-sushi Талнах"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 24,
+        "fields": {
+            "name": "Управляющий Нордлэнд",
+            "where_is_access": "Нордлэнд"
+        }
+    },
+    {
+        "model": "user.rightuser",
+        "pk": 25,
+        "fields": {
+            "name": "Никаких",
+            "where_is_access": "Нигде"
+        }
+    }
+]

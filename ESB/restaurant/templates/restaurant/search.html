@@ -1,0 +1,14 @@
+{% extends 'restaurant/base.html' %}
+
+{% block content %}
+    <h1>Search results</h1>
+    {% if results %}
+        <ul>
+            {% for r in results %}
+                <li><a href="{% url 'restaurant:report' r.id %}">{{ r.name }} | {{ r.city }} | {{ r.category }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+{% endblock %}

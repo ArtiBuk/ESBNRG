@@ -1,1 +1,38 @@
-[{"model": "restaurant.restaurantcategory", "pk": 1, "fields": {"name": "Рестораны", "short_description": "Рестораны полного цикла", "perm_grup_for_category": [1, 3]}}, {"model": "restaurant.restaurantcategory", "pk": 2, "fields": {"name": "Фастфуды", "short_description": "Рестораны неполного цикла", "perm_grup_for_category": [1, 2]}}, {"model": "restaurant.restaurantcategory", "pk": 3, "fields": {"name": "Детские центры", "short_description": "", "perm_grup_for_category": [1, 4]}}]
+[
+    {
+        "model": "restaurant.restaurantcategory",
+        "pk": 1,
+        "fields": {
+            "name": "Рестораны",
+            "short_description": "Рестораны полного цикла",
+            "perm_grup_for_category": [
+                1,
+                3
+            ]
+        }
+    },
+    {
+        "model": "restaurant.restaurantcategory",
+        "pk": 2,
+        "fields": {
+            "name": "Фастфуды",
+            "short_description": "Рестораны неполного цикла",
+            "perm_grup_for_category": [
+                1,
+                2
+            ]
+        }
+    },
+    {
+        "model": "restaurant.restaurantcategory",
+        "pk": 3,
+        "fields": {
+            "name": "Детские центры",
+            "short_description": "",
+            "perm_grup_for_category": [
+                1,
+                4
+            ]
+        }
+    }
+]

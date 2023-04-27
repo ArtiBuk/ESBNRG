@@ -7,9 +7,12 @@
 {% block content %}
     <div class="container">
 
-        <div class="row">
+        {% comment %} <div class="row">
             <div class="col-lg-3">
                 <h1 class="my-4">Nordrytail group</h1>
+                
+            </div> {% endcomment %}
+            <div class="col-lg-9">
                 <div class="list-group">
                     <a href={% url 'restaurant:index' %}>Все категории</a>
                     {% for category in categories %}
@@ -19,7 +22,38 @@
                     </a>
                     {% endfor %}
                 </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <form method="GET" action="{% url 'restaurant:search_restaurant' %}">
+                            <div class="input-group">
+                                <input type="text" name="q" class="form-control" placeholder="Поиск по названию ресторана">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-secondary" type="submit">Искать</button>
+                                </span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% comment %} <br>
+                {% if restaurant %}
+                    {% for r in restaurant %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2>{{ r.name }}</h2>
+                            <p>{{ r.description }}</p>
+                            <a class="btn btn-primary" href="{% url 'restaurant:report' r.id %}">Отчет</a>
+                        </div>
+                    </div>
+                    <hr>
+                    {% empty %}
+                        <p>Нет доступных ресторанов</p>
+                    {% endfor %}
+                {% endif %}
+                {% if query %}
+                    <p>Результаты поиска для: <strong>{{ query }}</strong></p>
+                {% endif %} {% endcomment %}
             </div>
+            
             <!-- /.col-lg-3 -->
             <div class="col-lg-9">
                 <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel">
@@ -60,7 +94,7 @@
                                 </a>
                                 <div class="card-body">
                                     <h4 class="card-title">
-                                        <a href="#">{{restaurant.name}}</a>
+                                        <a href="{% url 'restaurant:report' restaurant.id %}">{{restaurant.name}}</a>
                                     </h4>
                                     <h5>{{restaurant.city}}</h5>
                                     <h5>{{restaurant.adress}}</h5>
