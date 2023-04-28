@@ -1,24 +1,22 @@
 {% extends 'restaurant/base.html' %}
-
-{% block css %}
-    <link href="css/index.css" rel="stylesheet">
+{% load static %}
+{% block scss %}
+    <link href="{% static 'scss/Style_index.css' %}" rel="stylesheet">
 {% endblock  %}
 
 {% block content %}
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6">
-                    <h1 class="mt-5">Nordrytail group</h1>
-                    <p>
-                        Че-то там про супер удобное приложение
-                    </p>
-                    <button id="start-purchase-btn" type="button" class="btn btn-lg">
-                        <a id="start-purchase-link" href={% url 'restaurant:index'%}>
-                            Заведения
-                        </a>
-                    </button>
-                </div>
+    <section class="bodys">
+        <div class="block">
+            <div class="backgroundB">
+                <h1 class="textName">Nordrytail group</h1>
+                <p class="">
+                    Че-то там про супер удобное приложение
+                </p>
+                <button class="button" id="start-purchase-btn" type="button">
+                    <a id="start-purchase-link" href={% url 'restaurant:index'%}>
+                        Заведения
+                    </a>
+                </button>
             </div>
         </div>
     </section>
