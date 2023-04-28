@@ -1,14 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from restaurant.models import Restaurant, RestaurantCategory, Report
-from user.models import User, RightUser
 from django.db.models import Q
 from django.core.paginator import Paginator
-import openpyxl
 import datetime
-import matplotlib.pyplot as plt
 import plotly.graph_objs as go
-import calendar
 
 
 def index(request):
@@ -93,6 +89,7 @@ def generate_graph(report_data):
 
     return fig.to_html(full_html=False)
 
+
 def report(request, restaurant_id):
     restaurant = Restaurant.objects.get(pk=restaurant_id)
 
@@ -110,7 +107,8 @@ def report(request, restaurant_id):
         # если передан номер недели, то фильтруем данные за эту неделю
         year = datetime.date.today().year
         week_number = int(request.GET['week'])
-        start_date = datetime.datetime.strptime(f'{year}-W{week_number-1}-1', "%Y-W%W-%w").date()
+        start_date = datetime.datetime.strptime(
+            f'{year}-W{week_number-1}-1', "%Y-W%W-%w").date()
         end_date = start_date + datetime.timedelta(days=6)
 
     # получаем данные из модели Report за выбранный период для выбранного ресторана
@@ -131,35 +129,3 @@ def report(request, restaurant_id):
         'graph': graph,
     }
     return render(request, 'restaurant/report.html', context)
-# def report(request, restaurant_id):
-#     restaurant = Restaurant.objects.get(pk=restaurant_id)
-
-#     # по умолчанию отчет за последнюю неделю
-#     end_date = datetime.date.today()
-#     start_date = end_date - datetime.timedelta(days=7)
-
-#     if request.GET.get('start_date') and request.GET.get('end_date'):
-#         # если переданы start_date и end_date, то фильтруем данные по этим датам
-#         start_date = datetime.datetime.strptime(
-#             request.GET['start_date'], '%Y-%m-%d').date()
-#         end_date = datetime.datetime.strptime(
-#             request.GET['end_date'], '%Y-%m-%d').date()
-
-#     # получаем данные из модели Report за выбранный период для выбранного ресторана
-#     report_data = Report.objects.filter(
-#         department=restaurant, data__range=[start_date, end_date])
-#     graph = generate_graph(report_data)
-
-#     # создаем контекст для передачи данных в шаблон
-#     context = {
-#         'title': restaurant.name,
-#         'category': restaurant.category,
-#         'city': restaurant.city,
-#         'address': restaurant.adress,
-#         'report_data': report_data,
-#         'start_date': start_date,
-#         # вычитаем 1 день, чтобы отобразить правильную конечную дату
-#         'end_date': end_date - datetime.timedelta(days=1),
-#         'graph': graph,
-#     }
-#     return render(request, 'restaurant/report.html', context)
