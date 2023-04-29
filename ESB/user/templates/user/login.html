@@ -1,7 +1,11 @@
 {% extends 'user/base.html' %}
+{% load static %}
+{% block scss %}
+    <link href="{% static 'scss/Style_login.css' %}" rel="stylesheet">
+{% endblock  %}
 
 {% block content %}
-    <div class="col-lg-5">
+    <div class="contents">
         {% if messeges or form.errors %}
             <div class="alert alert-warning alert-dismissible fade show" role="alert"
                 style="margin-top: 50px;">
@@ -14,7 +18,7 @@
                 {% endif %}
             </div>
         {% endif %}
-        <div class="card shadow-lg border-0 rounded-lg mt-5">
+        <div class="content">
             <div class="card-header"><h3 class="text-center font-weight-light my-4">Авторизация</h3>
             </div>
             <div class="card-body">
