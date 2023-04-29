@@ -1,14 +1,23 @@
 {% extends 'restaurant/base.html' %}
 
 {% block content %}
-    <h1>Search results</h1>
-    {% if results %}
-        <ul>
-            {% for r in results %}
-                <li><a href="{% url 'restaurant:report' r.id %}">{{ r.name }} | {{ r.city }} | {{ r.category }}</a></li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No results found.</p>
-    {% endif %}
+<h1>Search results</h1>
+{% if results %}
+<ul>
+{% for r in results %}
+<li>
+<div class="card mb-3">
+<img class="card-img-top" src="/media/{{ r.image }}" alt="Restaurant Logo">
+<div class="card-body">
+<h5 class="card-title">{{ r.name }}</h5>
+<p class="card-text">{{ r.city }} | {{ r.category }}</p>
+<a href="{% url 'restaurant:report' r.id %}" class="btn btn-primary">View Report</a>
+</div>
+</div>
+</li>
+{% endfor %}
+</ul>
+{% else %}
+<p>No results found.</p>
+{% endif %}
 {% endblock %}
