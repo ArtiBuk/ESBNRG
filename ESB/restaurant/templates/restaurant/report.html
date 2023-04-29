@@ -82,6 +82,8 @@
             <input type="date" id="end_date" name="end_date" class="form-control" />
           </div>
           <div class="form-group">
+            <label for="year_number">Год:</label>
+            <input type="number" id="year_number" name="year" class="form-control" min="2021" max="2050" value="{{ start_date.year }}" />
             <label for="week_number">Номер недели:</label>
             <input type="number" id="week_number" name="week" class="form-control" min="1" max="52" />
           </div>
