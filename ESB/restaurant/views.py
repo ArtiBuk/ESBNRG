@@ -97,41 +97,43 @@ def report(request, restaurant_id,report_type_id):
     restaurant = Restaurant.objects.get(pk=restaurant_id)
     report_type = ReportType.objects.get(pk=report_type_id)
     
-    if report_type_id != 1:
-        return {}
-    # по умолчанию отчет за последнюю неделю
-    end_date = datetime.date.today()
-    start_date = end_date - datetime.timedelta(days=7)
+    if report_type_id == 1:
+        # по умолчанию отчет за последнюю неделю
+        end_date = datetime.date.today()
+        start_date = end_date - datetime.timedelta(days=7)
 
-    if request.GET.get('start_date') and request.GET.get('end_date') and not request.GET.get('week') and not request.GET.get('year'):
-        # если переданы start_date и end_date, то фильтруем данные по этим датам
-        start_date = datetime.datetime.strptime(
-            request.GET['start_date'], '%Y-%m-%d').date()
-        end_date = datetime.datetime.strptime(
-            request.GET['end_date'], '%Y-%m-%d').date()
-    elif request.GET.get('week') and request.GET.get('year'):
-        # если передан год и номер недели, то фильтруем данные за эту неделю
-        year = int(request.GET['year'])
-        week_number = int(request.GET['week'])
-        start_date = datetime.datetime.strptime(
-            f'{year}-W{week_number}-1', "%G-W%V-%u").date()
-        end_date = start_date + datetime.timedelta(days=6)
+        if request.GET.get('start_date') and request.GET.get('end_date') and not request.GET.get('week') and not request.GET.get('year'):
+            # если переданы start_date и end_date, то фильтруем данные по этим датам
+            start_date = datetime.datetime.strptime(
+                request.GET['start_date'], '%Y-%m-%d').date()
+            end_date = datetime.datetime.strptime(
+                request.GET['end_date'], '%Y-%m-%d').date()
+        elif request.GET.get('week') and request.GET.get('year'):
+            # если передан год и номер недели, то фильтруем данные за эту неделю
+            year = int(request.GET['year'])
+            week_number = int(request.GET['week'])
+            start_date = datetime.datetime.strptime(
+                f'{year}-W{week_number}-1', "%G-W%V-%u").date()
+            end_date = start_date + datetime.timedelta(days=6)
 
-    # получаем данные из модели Report за выбранный период для выбранного ресторана
-    report_data = Report.objects.filter(
-        department=restaurant, data__range=[start_date, end_date])
-    graph = generate_graph(report_data)
+        # получаем данные из модели Report за выбранный период для выбранного ресторана
+        report_data = Report.objects.filter(
+            department=restaurant, data__range=[start_date, end_date])
+        graph = generate_graph(report_data)
 
-    # создаем контекст для передачи данных в шаблон
-    context = {
-        'title': restaurant.name,
-        'category': restaurant.category,
-        'city': restaurant.city,
-        'address': restaurant.adress,
-        'report_data': report_data,
-        'start_date': start_date,
-        # вычитаем 1 день, чтобы отобразить правильную конечную дату
-        'end_date': end_date - datetime.timedelta(days=1),
-        'graph': graph,
-    }
+        # создаем контекст для передачи данных в шаблон
+        context = {
+            'title': restaurant.name,
+            'category': restaurant.category,
+            'city': restaurant.city,
+            'address': restaurant.adress,
+            'report_data': report_data,
+            'start_date': start_date,
+            # вычитаем 1 день, чтобы отобразить правильную конечную дату
+            'end_date': end_date - datetime.timedelta(days=1),
+            'graph': graph,
+            'report_type':report_type_id
+        }
+    if report_type_id == 2:  
+        return()
     return render(request, 'restaurant/report.html', context)
