@@ -9,10 +9,10 @@
 }
 
 .bodys{
-    height: 100%;
+    height: 100vh;
     background-size: cover;
     background-repeat: no-repeat;
-    background-image: url("../../../static/images/backimage.avif");
+    background-image: url("../../../static/images/backimage.jpg");
 }
 
 .textName{

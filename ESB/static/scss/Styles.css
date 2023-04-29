@@ -1,28 +1,28 @@
-.navbar{
-    background-color: black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
+.navbar {
+  background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
-.navblock{
-    display: flex;
-    justify-content: space-between;
-    font-size: 24px;
-    padding: 15px;
-    color: white;
-    text-decoration: none;
-    cursor: pointer;
-    max-width: 1600px;
-    width: 100%;
+.navblock {
+  display: flex;
+  justify-content: space-between;
+  font-size: 24px;
+  padding: 15px;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  max-width: 1600px;
+  width: 100%;
 }
 
-.navitem{
-    display: flex;
-    gap: 100px;
+.navitem {
+  display: flex;
+  gap: 100px;
 }
 
 a {
-    all: unset;
+  all: unset;
 }

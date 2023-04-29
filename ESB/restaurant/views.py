@@ -33,7 +33,7 @@ def restaurant(request, category_id=None):
         restaurants = Restaurant.objects.filter(
             perm_grup_fo=user.access_rights)
 
-    paginator = Paginator(restaurants, 3)
+    paginator = Paginator(restaurants, 6)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context.update({

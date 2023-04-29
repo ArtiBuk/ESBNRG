@@ -1,41 +1,88 @@
-
-.container{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center; 
-    height: 100%;
-    color: white;
-}
-/* 
-.bodys{
-    height: 100%;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-image: url("../../../static/images/backimage.avif");
+.content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-image: url("../../../static/images/backimage.jpg");
 }
 
-.textName{
-    font-size: 24px;
+.container {
+  height: 100%;
+  width: 100%;
+  max-width: 1600px;
+  padding: 100px 30px 30px 30px;
 }
 
-.button{
-    width: 200px;
-    height: 50px;
-    background-color: mediumpurple;
-    color: white;
-    font-size: 20px;
-    border-radius: 20px;
-    border: none;
-    cursor: pointer;
+.itemBox {
+  /* display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap; */
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
 }
 
-.backgroundB{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center; 
-    background-color: #5c6886;
-    border-radius: 20px;
-    padding: 30px;
-} */
+.pagination {
+  display: flex;
+}
+
+.page-item {
+  padding: 10px;
+  font-weight: 900;
+}
+
+.disabled {
+  color: gray;
+}
+
+.active {
+  color: red;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  background-color: black;
+  color: white;
+  width: 100%;
+  display:flex;
+  justify-content: center;
+}
+
+.search_block_item {
+  display: flex;
+  flex-direction: column;
+}
+
+.search_item {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  padding-left: 20px;
+  background-color: yellow;
+  padding-top: 100px;
+}
+
+.search_block {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+.search_input {
+  width: 240px;
+  height: 20px;
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.search_input::placeholder {
+  font-weight: bold;
+}
+
+li::marker {
+  content: '';
+  font-size: 1.2em;
+}
