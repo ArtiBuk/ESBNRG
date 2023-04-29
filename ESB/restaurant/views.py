@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from restaurant.models import Restaurant, RestaurantCategory, Report
+from restaurant.models import Restaurant, RestaurantCategory, Report, ReportType
 from django.db.models import Q
 from django.core.paginator import Paginator
 import datetime
@@ -89,7 +89,6 @@ def generate_graph(report_data):
 
     return fig.to_html(full_html=False)
 
-
 def report(request, restaurant_id):
     restaurant = Restaurant.objects.get(pk=restaurant_id)
 
@@ -97,18 +96,18 @@ def report(request, restaurant_id):
     end_date = datetime.date.today()
     start_date = end_date - datetime.timedelta(days=7)
 
-    if request.GET.get('start_date') and request.GET.get('end_date') and not request.GET.get('week'):
+    if request.GET.get('start_date') and request.GET.get('end_date') and not request.GET.get('week') and not request.GET.get('year'):
         # если переданы start_date и end_date, то фильтруем данные по этим датам
         start_date = datetime.datetime.strptime(
             request.GET['start_date'], '%Y-%m-%d').date()
         end_date = datetime.datetime.strptime(
             request.GET['end_date'], '%Y-%m-%d').date()
-    elif request.GET.get('week'):
-        # если передан номер недели, то фильтруем данные за эту неделю
-        year = datetime.date.today().year
+    elif request.GET.get('week') and request.GET.get('year'):
+        # если передан год и номер недели, то фильтруем данные за эту неделю
+        year = int(request.GET['year'])
         week_number = int(request.GET['week'])
         start_date = datetime.datetime.strptime(
-            f'{year}-W{week_number-1}-1', "%Y-W%W-%w").date()
+            f'{year}-W{week_number}-1', "%G-W%V-%u").date()
         end_date = start_date + datetime.timedelta(days=6)
 
     # получаем данные из модели Report за выбранный период для выбранного ресторана
