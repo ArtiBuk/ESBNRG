@@ -66,9 +66,11 @@
                                     <h5>{{restaurant.adress}}</h5>
                                     <p class="card-text">{{restaurant.short_description}}</p>
                                 </div>
-                                <div class="card-footer text-center">
-                                    <button type="button" class="btn btn-outline-success">Отправить в корзину</button>
-                                </div>
+                                {% for report_type in report_types %}
+                                    <div class="card-footer text-center">
+                                        <a href="{% url 'restaurant:report_type' restaurant.id report_type.id %}" class="btn btn-outline-success">{{ report_type.name_report }}</a>
+                                    </div>
+                                {% endfor %}
                             </div>
                         </div>
                     {% endfor %}

@@ -33,11 +33,14 @@ def restaurant(request, category_id=None):
         restaurants = Restaurant.objects.filter(
             perm_grup_fo=user.access_rights)
 
+    report_types = ReportType.objects.all()
+
     paginator = Paginator(restaurants, 6)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context.update({
         'restaurant': page_obj,
+        'report_types': report_types,  # Добавляем список видов отчетов в контекст
     })
     return render(request, 'restaurant/restaurant.html', context)
 
@@ -89,9 +92,13 @@ def generate_graph(report_data):
 
     return fig.to_html(full_html=False)
 
-def report(request, restaurant_id):
-    restaurant = Restaurant.objects.get(pk=restaurant_id)
 
+def report(request, restaurant_id,report_type_id):
+    restaurant = Restaurant.objects.get(pk=restaurant_id)
+    report_type = ReportType.objects.get(pk=report_type_id)
+    
+    if report_type_id != 1:
+        return {}
     # по умолчанию отчет за последнюю неделю
     end_date = datetime.date.today()
     start_date = end_date - datetime.timedelta(days=7)

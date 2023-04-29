@@ -10,4 +10,5 @@ urlpatterns = [
    path('report/<int:restaurant_id>', report, name='report'),
    path('page/<int:page>', restaurant, name='restaurant_pagination'),
    path('search/', search_restaurant, name='search_restaurant'),
+   path('report/<int:restaurant_id>/<int:report_type_id>/', report, name='report_type')
 ]
