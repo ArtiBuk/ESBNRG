@@ -1,0 +1,63 @@
+{% extends 'restaurant/base.html' %}
+
+{% block content %}
+    <h2>1</h2>
+    {% if report_name %}
+        <h2>{{ report_name }}</h2>
+        {% if report_type_id == 2 %}
+            <form method="get">
+                <div class="form-group">
+                    <label for="year_number">Год:</label>
+                    <input type="number" id="year_number" name="year" class="form-control" min="2021" max="2050" value="{{ current_year }}" />
+                </div>
+                <div class="form-group">
+                    <label for="month_number">Месяц:</label>
+                    <input type="number" id="month_number" name="month" class="form-control" min="1" max="12" value="{{ current_month }}" />
+                </div>
+                <button type="submit" class="btn btn-primary">Показать</button>
+            </form>
+        {% elif report_type_id == 3 %}
+            <form method="get">
+                <div class="form-group">
+                    <label for="year_number">Год:</label>
+                    <input type="number" id="year_number" name="year" class="form-control" min="2021" max="2050" value="{{ current_year }}" />
+                </div>
+                <div class="form-group">
+                    <label for="week_number">Неделя:</label>
+                    <input type="number" id="week_number" name="week" class="form-control" min="1" max="53" value="{{ current_week }}" />
+                </div>
+                <button type="submit" class="btn btn-primary">Показать</button>
+            </form>
+        {% endif %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Ресторан</th>
+                    <th>Выручка</th>
+                    <th>Себестоимость</th>
+                    <th>Количество чеков</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in report_data %}
+                    <tr>
+                        <td>{{ data.department__name }} {{ data.department__city }}</td>
+                        <td>{{ data.revenue }}</td>
+                        <td>{{ data.cost_price }}</td>
+                        <td>{{ data.number_of_checks }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Не удалось определить тип отчета</p>
+    {% endif %}
+{% endblock %}
+{% block footer %}
+  <footer class="py-5 bg-dark">
+    <div class="container">
+      <p class="m-0 text-center text-white">by ArtiBuk</p>
+    </div>
+  </footer>
+{% endblock %}
