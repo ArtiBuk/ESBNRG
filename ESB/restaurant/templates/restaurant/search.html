@@ -1,26 +1,35 @@
-{% extends 'restaurant/base.html' %} {% block content %}
-<h1>Search results</h1>
-{% if results %}
-<ul>
-  {% for r in results %}
-  <li>
-    <div class="card mb-3">
-      <img
-        class="card-img-top"
-        src="/media/{{ r.image }}"
-        alt="Restaurant Logo"
-      />
-      <div class="card-body">
-        <h5 class="card-title">{{ r.name }}</h5>
-        <p class="card-text">{{ r.city }} | {{ r.category }}</p>
-        <a href="{% url 'restaurant:report' r.id %}" class="btn btn-primary"
-          >View Report</a
-        >
-      </div>
-    </div>
-  </li>
-  {% endfor %}
-</ul>
-{% else %}
-<p>No results found.</p>
-{% endif %} {% endblock %}
+{% extends 'restaurant/base.html' %}
+
+{% block content %}
+    <h1>Search Results</h1>
+    {% if results %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for restaurant in results %}
+                <div class="col">
+                    <div class="card h-100">
+                        <a href="#">
+                            <img class="card-img-top"
+                                src="/media/{{restaurant.image}}"
+                                alt="">
+                        </a>
+                        <div class="card-body">
+                            <h4 class="card-title">
+                                <a href="#">{{restaurant.name}}</a>
+                            </h4>
+                            <h5>{{restaurant.city}}</h5>
+                            <h5>{{restaurant.adress}}</h5>
+                            <p class="card-text">{{restaurant.short_description}}</p>
+                        </div>
+                        {% if report_types %}
+                            <div class="card-footer text-center">
+                                <a href="{% url 'restaurant:report_type' restaurant.id report_types.0.id %}" class="btn btn-outline-success">{{ report_types.0.name_report }}</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+{% endblock %}

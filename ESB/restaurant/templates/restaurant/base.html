@@ -8,24 +8,18 @@
         <meta name="author" content="">
 
         <title>{{title|title}}</title>
-        <!-- Custom styles for this template -->
         <link href="{% static 'scss/Styles.css' %}" rel="stylesheet">
         {% block scss %}{% endblock%}
 
     </head>
 
     <body style="font-family: 'Lato', sans-serif; margin: 0;">
-        <!-- Navigation -->
         <nav style="position: fixed; width: 100%; z-index: 100; top: 0">
             <div class="navbar">
                 <div class="navblock">
                     <div class="">
                         <a href={% url 'index' %}>Nordrytail group</a>
                     </div>
-                    <!-- <button  type="button" data-toggle="collapse" data-target="#navbarResponsive"
-                            aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                        <span ></span>
-                    </button> -->
                     <div class="navitem" id="navbarResponsive">
                         <a href={% if user.is_authenticated %} {% url 'restaurant:index' %} {% else %} "{% url 'user:login' %}" {% endif %}>Каталог заведлений<i class="fas fa-shopping-bag"></i> </a>
                     {% if user.is_authenticated %}
@@ -40,15 +34,8 @@
                 </div>
             </div>
         </nav>
-        <!-- Page Content -->
         {% block content %}{% endblock %}
+        {% block script %}{% endblock %}
         {% block footer %}{% endblock %}
-
-        <!-- Bootstrap core JavaScript -->
-        <!-- <script src="vendor/jquery/jquery.min.js"></script> -->
-        <!-- <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
-
-        <!-- FontAwesome script -->
-        <!-- <script src="vendor/fontawesome/fontawesome-icons.js" crossorigin="anonymous"></script> -->
     </body>
 </html>

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     
     'restaurant',
     'user',
+    'mathfilters',
 ]
 
 MIDDLEWARE = [

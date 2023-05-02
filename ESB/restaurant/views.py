@@ -7,6 +7,7 @@ import datetime
 import plotly.graph_objs as go
 from django.db.models import Sum
 from django.db.models import F
+from decimal import Decimal
 
 
 def index(request):
@@ -56,9 +57,14 @@ def search_restaurant(request):
                 name__icontains=query,
                 perm_grup_fo=request.user.access_rights
             )
+            report_types = ReportType.objects.all()
+            context = {
+                'results': results,
+                'report_types': report_types,
+            }
+            return render(request, 'restaurant/search.html', context)
         else:
-            results = []
-        return render(request, 'restaurant/search.html', {'results': results})
+            return render(request, 'restaurant/search.html', {'results': []})
 
 
 def generate_graph(report_data):
@@ -85,7 +91,7 @@ def generate_graph(report_data):
 
     # Настраиваем внешний вид графика
     fig.update_layout(
-        title='Выручка за период',
+        title='Выручка за период:',
         xaxis_title='Дата',
         yaxis_title='Выручка, руб.',
         xaxis_tickangle=-45,
@@ -97,7 +103,6 @@ def generate_graph(report_data):
 
 def report(request, restaurant_id, report_type_id):
     restaurant = Restaurant.objects.get(pk=restaurant_id)
-    report_type = ReportType.objects.get(pk=report_type_id)
 
     if report_type_id == 1:
         # по умолчанию отчет за последнюю неделю
@@ -136,9 +141,8 @@ def report(request, restaurant_id, report_type_id):
             'graph': graph,
             'report_type': report_type_id
         }
-    if report_type_id == 2:
-        return ()
     return render(request, 'restaurant/report.html', context)
+
 
 def report_week_and_mounth(request, report_type_id):
     report_type = ReportType.objects.get(pk=report_type_id)
@@ -149,32 +153,39 @@ def report_week_and_mounth(request, report_type_id):
             # если переданы месяц и год, то фильтруем данные за этот месяц и год
             current_month = int(request.GET['month'])
             current_year = int(request.GET['year'])
-            
+
             report_data = Report.objects.filter(
                 data__year=current_year,
                 data__month=current_month,
                 department__isnull=False
-            ).select_related('department').values('department__name','department__city').annotate(
+            ).select_related('department').values('department__name', 'department__city').annotate(
                 revenue=Sum('revenue'),
                 cost_price=Sum('cost_price'),
                 number_of_checks=Sum('number_of_checks')
             ).order_by('department')
+
+            for i, data in enumerate(report_data):
+                revenue = data['revenue']
+                fact_value = request.POST.get(f'fact_value_{i+1}', 1) or 1
+                deviation = (revenue / Decimal(fact_value) -
+                             1) if float(fact_value) else 0
+                data['deviation'] = deviation
         else:
             report_data = None
             current_month = None
             current_year = None
-            
+
         context = {
             'title': 'NRG',
             'report_name': report_name,
             'report_data': report_data,
             'current_month': current_month,
             'current_year': current_year,
-            'report_type_id':report_type_id
+            'report_type_id': report_type_id,
         }
 
         return render(request, 'restaurant/week_mounth_results.html', context)
-    
+
     elif report_type_id == 3:
         report_name = report_type.name_report
         if 'week' in request.GET and 'year' in request.GET:
@@ -184,106 +195,28 @@ def report_week_and_mounth(request, report_type_id):
             start_date = datetime.datetime.strptime(
                 f'{year}-W{week_number}-1', "%G-W%V-%u").date()
             end_date = start_date + datetime.timedelta(days=6)
-            
+
             report_data = Report.objects.filter(
                 data__gte=start_date,
                 data__lte=end_date,
                 department__isnull=False
-            ).select_related('department').values('department__name','department__city').annotate(
+            ).select_related('department').values('department__name', 'department__city').annotate(
                 revenue=Sum('revenue'),
                 cost_price=Sum('cost_price'),
                 number_of_checks=Sum('number_of_checks')
             ).order_by('department')
         else:
             report_data = None
-            
+
         context = {
             'title': 'NRG',
             'report_name': report_name,
             'report_data': report_data,
             'current_month': None,
             'current_year': None,
-            'report_type_id':report_type_id
+            'report_type_id': report_type_id,
         }
 
         return render(request, 'restaurant/week_mounth_results.html', context)
-    else:
-        report_name = None
-        report_data = None
-        context = {
-            'title': 'NRG',
-            'report_name': report_name,
-            'report_data': report_data,
-            'current_month': None,
-            'current_year': None
-        }
-        
+
     return render(request, 'restaurant/week_mounth_results.html', context)
-
-# def report_week_and_mounth(request, report_type_id):
-#     report_type = ReportType.objects.get(pk=report_type_id)
-#     if report_type_id == 2:
-#         report_name = report_type.name_report
-#         if 'month' in request.GET and 'year' in request.GET:
-#             # если переданы месяц и год, то фильтруем данные за этот месяц и год
-#             current_month = int(request.GET['month'])
-#             current_year = int(request.GET['year'])
-            
-#             if 'week' in request.GET and 'year' in request.GET:
-#                 # если переданы номер недели и год, то фильтруем данные за эту неделю
-#                 year = int(request.GET['year'])
-#                 week_number = int(request.GET['week'])
-#                 start_date = datetime.datetime.strptime(
-#                     f'{year}-W{week_number}-1', "%G-W%V-%u").date()
-#                 end_date = start_date + datetime.timedelta(days=6)
-                
-#                 report_data = Report.objects.filter(
-#                     data__year=current_year,
-#                     data__month=current_month
-#                 ).select_related('department').values('department').annotate(
-#                     revenue=Sum('revenue'),
-#                     cost_price=Sum('cost_price'),
-#                     number_of_checks=Sum('number_of_checks')
-#                 ).order_by('department')
-#             else:
-#                 report_data = Report.objects.filter(
-#                     data__year=current_year,
-#                     data__month=current_month,
-#                     department__isnull=False
-#                 ).select_related('department').values('department').annotate(
-#                     revenue=Sum('revenue'),
-#                     cost_price=Sum('cost_price'),
-#                     number_of_checks=Sum('number_of_checks')
-#                 ).order_by('department')
-#         else:
-#             report_data = None
-#             current_month = None
-#             current_year = None
-            
-#         context = {
-#             'title': 'NRG',
-#             'report_name': report_name,
-#             'report_data': report_data,
-#             'current_month': current_month,
-#             'current_year': current_year
-#         }
-
-#         return render(request, 'restaurant/week_mounth_results.html', context)
-#     elif report_type_id == 3:
-#         report_name = report_type.name_report
-#         # Add logic for report_type_id == 3
-#         report_data = None
-        
-#         context = {
-#             'title': 'NRG',
-#             'report_name': report_name,
-#             'report_data': report_data,
-#             'current_month': None,
-#             'current_year': None
-#         }
-
-#         return render(request, 'restaurant/week_mounth_results.html', context)
-#     else:
-#         report_name = None
-#         report_data = None
-#     return render(request, 'restaurant/week_mounth_results.html', context)

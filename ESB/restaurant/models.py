@@ -61,11 +61,13 @@ class ReportType(models.Model):
     name_report = models.CharField(max_length=20, verbose_name='Вид отчета')
     short_description = models.CharField(
         max_length=64, blank=True, verbose_name='Краткое описание отчета')
+
     class Meta:
         verbose_name_plural = 'Виды отчета'
 
     def __str__(self):
         return f'{self.name_report} | {self.short_description} '
+
 
 class Report(models.Model):
     department = models.ForeignKey(
