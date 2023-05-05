@@ -43,19 +43,23 @@
       </thead>
       <tbody>
         {% for data in report_data %}
-          <tr>
-            <td>{{ data.department__name }} {{ data.department__city }}</td>
-            <td class="revenue">{{ data.revenue }} руб.</td>
-            <td>{{ data.cost_price }} руб.</td>
-            <td>{{ data.number_of_checks }} шт.</td>
-            <td>
-              <input type="text" name="fact_value_{{ forloop.counter }}" class="fact-input" value="0" 
-                onfocus="if (this.value == '0') {this.value = '';}" 
-                onblur="if (this.value == '') {this.value = '0';}" />
-            </td>
-            <td class="deviation"></td>
-          </tr>
+        <tr>
+          <td>{{ data.department__name }} {{ data.department__city }}</td>
+          <td class="revenue">{{ data.revenue }} руб.</td>
+          <td>{{ data.cost_price }} руб.</td>
+          <td>{{ data.number_of_checks }} шт.</td>
+          <td>
+            <input type="text" name="fact_value_{{ forloop.counter }}" class="fact-input" value="0" onfocus="if (this.value == '0') {this.value = '';}" onblur="if (this.value == '') {this.value = '0';}" />
+          </td>
+          <td class="deviation"></td>
+        </tr>
         {% endfor %}
+        <tr>
+          <td>ИТОГ</td>
+          <td class="total-revenue"></td>
+          <td class="total-cost-price"></td>
+          <td class="total-number-of-checks"></td>
+        </tr>
       </tbody>
     </table>
   {% else %}
@@ -81,14 +85,30 @@
       })
     })
     
-    // добавляем обработчик события нажатия на кнопку "Отправить"
-    const submitButton = document.querySelector('button[type="submit"]')
-    submitButton.addEventListener('click', () => {
-      const rows = document.querySelectorAll('tbody tr')
-      rows.forEach((row) => {
-        calculateDeviation(row)
+    // функция для суммирования значений в ячейках
+    function sumCells(cells) {
+      let total = 0
+      cells.forEach((cell) => {
+        const value = parseFloat(cell.textContent)
+        if (!isNaN(value)) {
+          total += value
+        }
       })
-    })
+      return total
+    }
+
+    // суммируем значения по столбцам и выводим их в соответствующие ячейки
+    const revenueCells = document.querySelectorAll('.revenue')
+    const totalRevenue = sumCells(revenueCells)
+    document.querySelector('.total-revenue').textContent = totalRevenue.toFixed(2) + " руб."
+
+    const costPriceCells = document.querySelectorAll('td:nth-child(3)')
+    const totalCostPrice = sumCells(costPriceCells)
+    document.querySelector('.total-cost-price').textContent = totalCostPrice.toFixed(2) + " руб."
+
+    const numberOfChecksCells = document.querySelectorAll('td:nth-child(4)')
+    const totalNumberOfChecks = sumCells(numberOfChecksCells)
+    document.querySelector('.total-number-of-checks').textContent = totalNumberOfChecks + " шт."
   </script>
 {% endblock %}
 
