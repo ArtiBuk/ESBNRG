@@ -1,35 +1,39 @@
-{% extends 'restaurant/base.html' %}
+{% extends 'restaurant/base.html' %} {% load static %} {% block scss %}
+<link href="{% static 'css/Style_search.css' %}" rel="stylesheet" />
+{% endblock %} {% block content %}
+<div class="container">
+  <h1 style="">Результат поиска</h1>
 
-{% block content %}
-    <h1>Search Results</h1>
-    {% if results %}
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            {% for restaurant in results %}
-                <div class="col">
-                    <div class="card h-100">
-                        <a href="#">
-                            <img class="card-img-top"
-                                src="/media/{{restaurant.image}}"
-                                alt="">
-                        </a>
-                        <div class="card-body">
-                            <h4 class="card-title">
-                                <a href="#">{{restaurant.name}}</a>
-                            </h4>
-                            <h5>{{restaurant.city}}</h5>
-                            <h5>{{restaurant.adress}}</h5>
-                            <p class="card-text">{{restaurant.short_description}}</p>
-                        </div>
-                        {% if report_types %}
-                            <div class="card-footer text-center">
-                                <a href="{% url 'restaurant:report_type' restaurant.id report_types.0.id %}" class="btn btn-outline-success">{{ report_types.0.name_report }}</a>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-            {% endfor %}
+  {% if results %}
+  <div class="itemBox">
+    {% for restaurant in results %}
+    <div class="item">
+      <a href="#" style="display: flex">
+        <img style="width: 250px" src="/media/{{restaurant.image}}" alt="" />
+      </a>
+      <div class="itemText">
+        <div class="padding: 0px 10px 0px 10px;">
+          <h4 class="card-title">
+            <a href="#">{{restaurant.name}}</a>
+          </h4>
+          <h5>{{restaurant.city}}</h5>
+          <h5>{{restaurant.adress}}</h5>
+          <p class="card-text">{{restaurant.short_description}}</p>
         </div>
-    {% else %}
-        <p>No results found.</p>
-    {% endif %}
-{% endblock %}
+        {% if report_types %}
+        <div class="buttonReport">
+          <a
+            href="{% url 'restaurant:report_type' restaurant.id report_types.0.id %}"
+            class=""
+            >{{ report_types.0.name_report }}</a
+          >
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p style="">Нет результов поиска</p>
+  {% endif %} {% endblock %}
+</div>

@@ -1,9 +1,10 @@
 .navbar {
-  background-color: black;
+  background-color: #1f1f1f;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
+  border-bottom: solid white;
 }
 
 .navblock {
@@ -21,8 +22,27 @@
 .navitem {
   display: flex;
   gap: 100px;
+  align-items: center;
+}
+
+body{
+  height: 100vh;
+  color: white;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+  url("../../../static/images/back.png");
 }
 
 a {
   all: unset;
+}
+
+/* ::-webkit-scrollbar-track {
+  height: 1px;
+  width: 1px;
+} */
+
+body::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  background-color: #aaa; /* or add it to the track */
 }

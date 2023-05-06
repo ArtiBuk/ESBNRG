@@ -1,34 +1,72 @@
-{% extends 'restaurant/base.html' %}
-
-{% block content %}
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
+{% extends 'restaurant/base.html' %} {% load static %} {% block scss %}
+<link href="{% static 'css/Style_report.css' %}" rel="stylesheet" />
+{% endblock %} {% block content %}
+<div class="container">
+  <div class="content">
+    <div class="">
+      <div class="block">
         <h1>{{ title }}</h1>
-        <p>{{ category }}</p>
-        <p>{{ city }}</p>
-        <p>{{ address }}</p>
-        <form method="GET">
-          <div class="form-group">
-            <label for="start_date">Начало периода:</label>
-            <input type="date" id="start_date" name="start_date" class="form-control" />
-          </div>
-          <div class="form-group">
-            <label for="end_date">Конец периода:</label>
-            <input type="date" id="end_date" name="end_date" class="form-control" />
-          </div>
-          <div class="form-group">
-            <label for="year_number">Год:</label>
-            <input type="number" id="year_number" name="year" class="form-control" min="2021" max="2050" value="{{ start_date.year }}" />
-            <label for="week_number">Номер недели:</label>
-            <input type="number" id="week_number" name="week" class="form-control" min="1" max="52" />
-          </div>
-          <button type="submit" class="btn btn-primary">Показать отчет</button>
-        </form>
-        {% if start_date and end_date %}
-          <p>Период с {{ start_date }} по {{ end_date }}</p>
-        {% endif %}
+        <div>
+          <p>{{ category }}</p>
+          <p>{{ city }}</p>
+          <p>{{ address }}</p>
+        </div>
 
+        <form method="GET" class="forms">
+          <div style="display: flex; gap: 30px; margin-bottom: 20px;">
+            <div class="settingsItem">
+              <div class="items">
+                <label for="start_date">Начало периода:</label>
+                <input
+                  type="date"
+                  id="start_date"
+                  name="start_date"
+                  class="form-control"
+                />
+              </div>
+              <div class="items">
+                <label for="end_date">Конец периода:</label>
+                <input
+                  type="date"
+                  id="end_date"
+                  name="end_date"
+                  class="form-control"
+                />
+              </div>
+            </div>
+            <div class="settingsItem">
+              <div class="items">
+                <label for="year_number">Год:</label>
+                <input
+                  type="number"
+                  id="year_number"
+                  name="year"
+                  class="form-control"
+                  min="2021"
+                  max="2050"
+                  value=""
+                />
+              </div>
+              <div class="items">
+                <label for="week_number">Номер недели:</label>
+                <input
+                  type="number"
+                  id="week_number"
+                  name="week"
+                  class="form-control"
+                  min="1"
+                  max="52"
+                />
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="buttonR">Показать отчет</button>
+        </form>
+      </div>
+      <div class="tableBox">
+        {% if start_date and end_date %}
+        <p>Период с {{ start_date }} по {{ end_date }}</p>
+        {% endif %}
         <table class="table">
           <thead>
             <tr>
@@ -44,38 +82,28 @@
           </thead>
           <tbody>
             {% for report in report_data %}
-              <tr>
-                <td>{{ report.data|date:'Y' }}</td>
-                <td>{{ report.number_week }}</td>
-                <td>{{ report.data|date:'F' }}</td>
-                <td>{{ report.data|date:'j' }} {{ report.weekdays }}</td>
-                <td>{{ report.revenue }} руб.</td>
-                <td>{{ report.cost_price }} руб.</td>
-                <td>{{ report.number_of_checks }} шт.</td>
-                <td>
-                  {% widthratio report.revenue report.number_of_checks 1 %}
-                </td>
-              </tr>
+            <tr>
+              <td>{{ report.data|date:'Y' }}</td>
+              <td>{{ report.number_week }}</td>
+              <td>{{ report.data|date:'F' }}</td>
+              <td>{{ report.data|date:'j' }} {{ report.weekdays }}</td>
+              <td>{{ report.revenue }} руб.</td>
+              <td>{{ report.cost_price }} руб.</td>
+              <td>{{ report.number_of_checks }} шт.</td>
+              <td>{% widthratio report.revenue report.number_of_checks 1 %}</td>
+            </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
-      {% if report_type == 1 %}
-        {% if graph %}
-          <div class="container">
-            <div class="row">
-              <div class="col-lg-12">{{ graph|safe }}</div>
-            </div>
-          </div>
-        {% endif %}
-      {% endif %}
+      {% if report_type == 1 %} {% if graph %}
+      <div class="col-lg-12">{{ graph|safe }}</div>
+      {% endif %} {% endif %}
     </div>
   </div>
-{% endblock %}
-{% block footer %}
-  <footer class="py-5 bg-dark">
-    <div class="container">
-      <p class="m-0 text-center text-white">by ArtiBuk and Gravity_V</p>
-    </div>
-  </footer>
+</div>
+{% endblock %} {% block footer %}
+<footer class="py-5 bg-dark">
+  <p class="m-0 text-center text-white">by ArtiBuk</p>
+</footer>
 {% endblock %}

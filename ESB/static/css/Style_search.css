@@ -1,0 +1,53 @@
+body {
+  color: white;
+  padding-top: 100px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-size: contain;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("../../../static/images/back.png");
+}
+
+.container {
+  height: 100%;
+  padding: 0px 30px 30px 30px;
+}
+
+.itemBox {
+  width: 600px;
+  display: flex;
+  padding: 20px;
+  width: fit-content;
+  gap: 30px;
+  flex-direction: column;
+}
+
+.item {
+  color: white;
+  background-color: #1f1f1f;
+  display: flex;
+  border-radius: 6px;
+  border: solid 4px white;
+}
+
+.itemText {
+  font-size: 20px;
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.buttonReport {
+  width: initial;
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 9px;
+  cursor: pointer;
+  background-color: #464646;
+}

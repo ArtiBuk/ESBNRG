@@ -7,56 +7,53 @@
 {% block content %}
 <div class="content">
     <div class="search_item">
-        <a href={% url 'restaurant:index' %}>Все категории</a>
+        <a href={% url 'restaurant:index' %} style="padding-bottom: 5px;">Все категории:</a>
         {% for category in categories %}
-            <a href="{% url 'restaurant:category' category.id %}" style="">
+        <a style="cursor: pointer;" href="{% url 'restaurant:category' category.id %}" style="padding-bottom: 5px;">
             {{category.name}}
         </a>
         {% endfor %}
+        {% if report_types %}
+        <div class="card-footer text-center" style="margin-top: 20px; display: flex; flex-direction: column;">
+            <span style="margin-bottom: 10px;">Виды отчётов:</span>
+            <a style="padding-bottom: 5px; cursor: pointer;" href="{% url 'restaurant:week_mounth_results' report_type_id=report_types.1.id %}" class="btn btn-outline-success">{{ report_types.1.name_report }}</a>
+            <a style="cursor: pointer;" href="{% url 'restaurant:week_mounth_results' report_type_id=report_types.2.id %}" class="btn btn-outline-success">{{ report_types.2.name_report }}</a>
+        </div>
+        {% endif %}
     </div>
     <div class="container">
             <div>
                 <div class="search_block_item">
-                    <div class="">
-                        <form class="search_block" method="GET" action="{% url 'restaurant:search_restaurant' %}">
-                            <input type="text" name="q" class="search_input" placeholder="Поиск по названию ресторана">
-                            <span class="input-group-btn">
-                                <button style="margin-left: 10px; background-color: transparent; border: none;"><img style="cursor: pointer;" src="../../../static/images/icons8-search.svg" type="submit" alt="Искать"></button>
-                            </span>
-                        </form>
-                    </div>
-                    {% if report_types %}
-                        <div class="card-footer text-center">
-                            <a href="{% url 'restaurant:week_mounth_results' report_type_id=report_types.1.id %}" class="btn btn-outline-success">{{ report_types.1.name_report }}</a>
-                            <a href="{% url 'restaurant:week_mounth_results' report_type_id=report_types.2.id %}" class="btn btn-outline-success">{{ report_types.2.name_report }}</a>
-                        </div>
-                    {% endif %}
+                    <form class="search_block" method="GET" action="{% url 'restaurant:search_restaurant' %}">
+                        <input type="text" name="q" class="search_input" placeholder="Поиск по названию ресторана">
+                        <span class="input-group-btn">
+                            <button style="margin-left: 10px; background-color: transparent; border: none;"><img style="cursor: pointer;" src="../../../static/images/icons_search_white.svg" type="submit" alt="Искать"></button>
+                        </span>
+                    </form>
                 </div>
     
                 <div class="itemBox">
                     {% for restaurant in restaurant %}
-                        <div style="">
-                            <div class="card h-100">
-                                <a href="#">
-                                    <img class="card-img-top"
-                                        src="/media/{{restaurant.image}}"
-                                        alt="">
-                                </a>
-                                <div class="card-body">
-                                    <h4 class="card-title">
-                                        <a href="#">{{restaurant.name}}</a>
-                                    </h4>
-                                    <h5>{{restaurant.city}}</h5>
-                                    <h5>{{restaurant.adress}}</h5>
-                                    <p class="card-text">{{restaurant.short_description}}</p>
-                                </div>
-                                {% if report_types %}
-                                    <div class="card-footer text-center">
-                                        <a href="{% url 'restaurant:report_type' restaurant.id report_types.0.id %}" class="btn btn-outline-success">{{ report_types.0.name_report }}</a>
-                                    </div>
-                                {% endif %}
+                    <div class="item">
+                        <a href="#" style="display: flex;">
+                            <img class="" style="width: 250px;" src="/media/{{restaurant.image}}" alt="">
+                        </a>
+                        <div class="itemText">
+                            <div style="padding: 0px 10px 0px 10px;">
+                                <h4 class="card-title">
+                                    <a href="#">{{restaurant.name}}</a>
+                                </h4>
+                                <h5>{{restaurant.city}}</h5>
+                                <h5>{{restaurant.adress}}</h5>
+                                <p class="card-text">{{restaurant.short_description}}</p>
                             </div>
+                            {% if report_types %}
+                                <button class="buttonReport">
+                                    <a href="{% url 'restaurant:report_type' restaurant.id report_types.0.id %}">{{ report_types.0.name_report }}</a>
+                                </button>
+                            {% endif %}
                         </div>
+                    </div>
                     {% endfor %}
                 </div>
     
@@ -74,7 +71,7 @@
                         {% for i in restaurant.paginator.page_range %}
                         {% if restaurant.number == i %}
                         <li class="page-item active" aria-current="page">
-                            <span class="page-link">{{ i }}<span class="sr-only">(current)</span></span>
+                            <span class="page-link">{{ i }}</span>
                         </li>
                         {% else %}
                         <li class="page-item">
@@ -102,8 +99,6 @@
 
 {% block footer %}
     <footer class="py-5 bg-dark">
-        <div class="container">
-        <p class="m-0 text-center text-white">by ArtiBuk and Gravity_V</p>
-        </div>
+        <p class="m-0 text-center text-white">by ArtiBuk</p>
     </footer>
 {% endblock  %}
