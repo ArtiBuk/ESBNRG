@@ -89,7 +89,16 @@
     const factValue = parseFloat(row.querySelector('.fact-input').value);
     let deviation = (revenue / factValue - 1) * 100 || 0;
     deviation = Math.max(-1000, Math.min(1000, deviation)); // Ограничиваем результат в диапазоне от -100 до 100
-    row.querySelector('.deviation').textContent = deviation.toFixed(2) + '%';
+    const deviationCell = row.querySelector('.deviation');
+    deviationCell.textContent = deviation.toFixed(2) + '%';
+  
+    if (deviation < 0) {
+      deviationCell.style.color = 'red'; // Устанавливаем красный цвет текста
+    } else if (deviation > 0) {
+      deviationCell.style.color = 'green'; // Устанавливаем зеленый цвет текста
+    } else {
+      deviationCell.style.color = 'white'; // Устанавливаем черный цвет текста
+    }
   }
 
   // добавляем обработчик события ввода для полей "Факт"
