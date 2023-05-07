@@ -91,14 +91,31 @@ def generate_graph(report_data):
 
     # Настраиваем внешний вид графика
     fig.update_layout(
-        title='Выручка за период:',
-        xaxis_title='Дата',
-        yaxis_title='Выручка, руб.',
-        xaxis_tickangle=-45,
-        showlegend=True
+        title='Выручка за период',
+        xaxis=dict(
+            title='Дата',
+            tickangle=-45,
+            showgrid=True,
+            gridwidth=1,
+            gridcolor='lightgray'
+        ),
+        yaxis=dict(
+            title='Выручка, руб.',
+            showgrid=True,
+            gridwidth=1,
+            gridcolor='lightgray'
+        ),
+        legend=dict(
+            x=0.5,
+            y=1.15,
+            orientation='h',
+            bgcolor='rgba(0,0,0,0)'
+        ),
+        plot_bgcolor='white',
+        paper_bgcolor='white'
     )
 
-    return fig.to_html(full_html=False)
+    return fig.to_html(full_html=False,config={'displayModeBar': False})
 
 
 def report(request, restaurant_id, report_type_id):

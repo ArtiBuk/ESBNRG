@@ -1,5 +1,4 @@
 {% extends 'restaurant/base.html' %}
-{% load mathfilters %}
 {% load static %} 
 {% block scss %}
   <link href="{% static 'css/Style_report.css' %}" rel="stylesheet" />
@@ -9,14 +8,13 @@
   <div class="content">
     <div style="display: flex; align-items: center; flex-direction: column;">
   <div class="block" style="width: fit-content;">
-    <h2>1</h2>
     {% if report_name %}
     <h2>{{ report_name }}</h2>
     {% if report_type_id == 2 %}
     <form method="get" class="settingsItem">
       <div class="items">
         <label for="year_number">Год:</label>
-        <input type="number" id="year_number" name="year" class="form-control" min="2021" max="2050" value="{{ current_year }}" />
+        <input type="number" id="year_number" name="year" class="form-control" min="2022" max="2023" value="{{ current_year }}" />
       </div>
       <div class="items">
         <label for="month_number">Месяц:</label>
@@ -29,7 +27,7 @@
       <div style="display: flex; gap: 20px;">
         <div class="">
           <label for="year_number">Год:</label>
-          <input type="number" id="year_number" name="year" class="form-control" min="2021" max="2050" value="{{ current_year }}" />
+          <input type="number" id="year_number" name="year" class="form-control" min="2022" max="2023" value="{{ current_year }}" />
         </div>
         <div class="">
           <label for="week_number">Неделя:</label>
@@ -60,7 +58,7 @@
         <td>{{ data.cost_price }} руб.</td>
         <td>{{ data.number_of_checks }} шт.</td>
           <td>
-            <input type="text" name="fact_value_{{ forloop.counter }}" class="fact-input" value="0" onfocus="if (this.value == '0') {this.value = '';}" onblur="if (this.value == '') {this.value = '0';}" />
+            <input type="text" name="fact_value_{{ forloop.counter }}" class="fact-input" value="0" onfocus="if (this.value == '0') {this.value = '';}" onblur="if (this.value == '') {this.value = '0';}" pattern="[0-9]+" maxlength="10" /> руб.
           </td>
           <td class="deviation"></td>
         </tr>
@@ -70,6 +68,8 @@
           <td class="total-revenue"></td>
           <td class="total-cost-price"></td>
           <td class="total-number-of-checks"></td>
+          <td class="total-fact_value_"></td>
+          <td class="total-deviation"></td>
         </tr>
       </tbody>
     </table>
@@ -81,51 +81,93 @@
 </div>
 </div>
   {% endblock %}
-    {% block script %}
-    <script>
-      // функция для рассчета отклонения
-      function calculateDeviation(row) {
-      const revenue = parseFloat(row.querySelector('.revenue').textContent)
-      const factValue = parseFloat(row.querySelector('.fact-input').value)
-      const deviation = revenue / factValue - 1 || 0
-      row.querySelector('.deviation').textContent = deviation.toFixed(2)
+  {% block script %}
+  <script>
+  // функция для рассчета отклонения
+  function calculateDeviation(row) {
+    const revenue = parseFloat(row.querySelector('.revenue').textContent);
+    const factValue = parseFloat(row.querySelector('.fact-input').value);
+    let deviation = (revenue / factValue - 1) * 100 || 0;
+    deviation = Math.max(-1000, Math.min(1000, deviation)); // Ограничиваем результат в диапазоне от -100 до 100
+    row.querySelector('.deviation').textContent = deviation.toFixed(2) + '%';
+  }
+
+  // добавляем обработчик события ввода для полей "Факт"
+  const factInputs = document.querySelectorAll('.fact-input');
+  factInputs.forEach((input) => {
+    input.addEventListener('input', () => {
+      const inputValue = input.value;
+      const onlyDigits = inputValue.replace(/\D/g, ''); // удалить все символы, кроме цифр
+      input.value = onlyDigits;
+      const row = input.closest('tr');
+      calculateDeviation(row);
+      calculateTotalFactValue();
+      calculateTotalDeviation();
+    });
+  });
+
+  // функция для суммирования значений в ячейках
+  function sumCells(cells) {
+    let total = 0;
+    cells.forEach((cell) => {
+      const value = parseFloat(cell.textContent);
+      if (!isNaN(value)) {
+        total += value;
+      }
+    });
+    return total;
+  }
+
+  // функция для обновления значения total-fact_value_
+  function calculateTotalFactValue() {
+    const factValueInputs = document.querySelectorAll('.fact-input');
+    let totalFactValue = 0;
+    factValueInputs.forEach((input) => {
+      const value = parseFloat(input.value);
+      if (!isNaN(value)) {
+        totalFactValue += value;
+      }
+    });
+    document.querySelector('.total-fact_value_').textContent = totalFactValue.toFixed(2) + " руб.";
+  }
+
+  // функция для обновления значения total-deviation
+  function calculateTotalDeviation() {
+    const deviationCells = document.querySelectorAll('.deviation');
+    let totalDeviation = 0;
+    let numberOfCells = 0;
+    deviationCells.forEach((cell) => {
+      const value = parseFloat(cell.textContent);
+      if (!isNaN(value)) {
+        totalDeviation += value;
+        numberOfCells++;
+      }
+    });
+    totalDeviation = totalDeviation / numberOfCells;
+    document.querySelector('.total-deviation').textContent = totalDeviation.toFixed(2) + "%";
+  }
+  
+    // функция для обновления общих значений (total-cost-price, total-number-of-checks и total-revenue)
+    function calculateTotals() {
+      const revenueCells = document.querySelectorAll('.revenue');
+      const totalRevenue = sumCells(revenueCells);
+      document.querySelector('.total-revenue').textContent = totalRevenue.toFixed(2) + " руб.";
+  
+      const costPriceCells = document.querySelectorAll('td:nth-child(3)');
+      const totalCostPrice = sumCells(costPriceCells);
+      document.querySelector('.total-cost-price').textContent = totalCostPrice.toFixed(2) + " руб.";
+  
+      const numberOfChecksCells = document.querySelectorAll('td:nth-child(4)');
+      const totalNumberOfChecks = sumCells(numberOfChecksCells);
+      document.querySelector('.total-number-of-checks').textContent = totalNumberOfChecks + " шт.";
     }
-    
-    // добавляем обработчик события изменения для всех полей "Факт"
-    const factInputs = document.querySelectorAll('.fact-input')
-    factInputs.forEach((input) => {
-      input.addEventListener('input', () => {
-        const row = input.closest('tr')
-        calculateDeviation(row)
-      })
-    })
-    
-    // функция для суммирования значений в ячейках
-    function sumCells(cells) {
-      let total = 0
-      cells.forEach((cell) => {
-        const value = parseFloat(cell.textContent)
-        if (!isNaN(value)) {
-          total += value
-        }
-      })
-      return total
-    }
-
-    // суммируем значения по столбцам и выводим их в соответствующие ячейки
-    const revenueCells = document.querySelectorAll('.revenue')
-    const totalRevenue = sumCells(revenueCells)
-    document.querySelector('.total-revenue').textContent = totalRevenue.toFixed(2) + " руб."
-
-    const costPriceCells = document.querySelectorAll('td:nth-child(3)')
-    const totalCostPrice = sumCells(costPriceCells)
-    document.querySelector('.total-cost-price').textContent = totalCostPrice.toFixed(2) + " руб."
-
-    const numberOfChecksCells = document.querySelectorAll('td:nth-child(4)')
-    const totalNumberOfChecks = sumCells(numberOfChecksCells)
-    document.querySelector('.total-number-of-checks').textContent = totalNumberOfChecks + " шт."
+  
+    // вызываем функцию для расчета и обновления общих значений
+    calculateTotals();
+  
   </script>
-{% endblock %}
+  {% endblock %}
+  
 
 {% block footer %}
   <footer>

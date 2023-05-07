@@ -48,9 +48,9 @@
                                 <p class="card-text">{{restaurant.short_description}}</p>
                             </div>
                             {% if report_types %}
-                                <button class="buttonReport">
-                                    <a href="{% url 'restaurant:report_type' restaurant.id report_types.0.id %}">{{ report_types.0.name_report }}</a>
-                                </button>
+                                <a href="{% url 'restaurant:report_type' restaurant.id report_types.0.id %}" class="buttonReport" style="background-color: transparent;">
+                                    <button class="buttonReport">{{ report_types.0.name_report }}</button>
+                                </a>
                             {% endif %}
                         </div>
                     </div>

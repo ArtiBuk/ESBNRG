@@ -18,7 +18,7 @@
             <div class="navbar">
                 <div class="navblock">
                     <div class="">
-                        <a href={% url 'index' %}>Nordrytail group</a>
+                        <a href={% url 'index' %}>ООО "НордритейлГрупп"</a>
                     </div>
                     <div class="navitem" id="navbarResponsive">
                         <a href={% if user.is_authenticated %} {% url 'restaurant:index' %} {% else %} "{% url 'user:login' %}" {% endif %}>Каталог заведлений<i class="fas fa-shopping-bag"></i> </a>

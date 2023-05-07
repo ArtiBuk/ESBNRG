@@ -51,6 +51,7 @@
   cursor: pointer;
   background-color: #464646;
   color: white;
+  text-align: center;
 }
 
 .pagination {
