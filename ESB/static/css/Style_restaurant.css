@@ -43,7 +43,7 @@
 }
 
 .buttonReport {
-  width: initial;
+  width: inherit;
   display: flex;
   justify-content: center;
   padding: 10px;

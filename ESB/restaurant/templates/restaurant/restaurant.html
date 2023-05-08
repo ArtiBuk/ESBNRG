@@ -48,9 +48,9 @@
                                 <p class="card-text">{{restaurant.short_description}}</p>
                             </div>
                             {% if report_types %}
-                                <a href="{% url 'restaurant:report_type' restaurant.id report_types.0.id %}" class="buttonReport" style="background-color: transparent;">
-                                    <button class="buttonReport">{{ report_types.0.name_report }}</button>
-                                </a>
+                            <a href="{% url 'restaurant:report_type' restaurant.id report_types.0.id %}" style="background-color: transparent; width: 100%;">
+                                <button class="buttonReport">{{ report_types.0.name_report }}</button>
+                            </a>
                             {% endif %}
                         </div>
                     </div>
@@ -65,7 +65,7 @@
                         </li>
                         {% else %}
                         <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Предыдущая</a>
+                            <a class="page-link" tabindex="-1" aria-disabled="true">Предыдущая</a>
                         </li>
                         {% endif %}
                         {% for i in restaurant.paginator.page_range %}
@@ -85,7 +85,7 @@
                         </li>
                         {% else %}
                         <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Следующая</a>
+                            <a class="page-link" tabindex="-1" aria-disabled="true">Следующая</a>
                         </li>
                         {% endif %}
                     </ul>
