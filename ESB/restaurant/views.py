@@ -67,27 +67,32 @@ def search_restaurant(request):
             return render(request, 'restaurant/search.html', {'results': []})
 
 
-def generate_graph(report_data):
+def generate_graph(report_data, selected_restaurants):
     # формируем данные для каждого месяца
     data = {}
     for r in report_data:
         month = r.data.month
         if month not in data:
-            data[month] = {'dates': [], 'revenues': []}
+            data[month] = {'dates': [], 'revenues': [], 'restaurant': []}
         data[month]['dates'].append(r.data)
         data[month]['revenues'].append(r.revenue)
+        data[month]['restaurant'].append((r.department.name, r.department.city))  # изменено
 
     # Создаем объект для построения графика
     fig = go.Figure()
 
-    # Добавляем данные на график для каждого месяца
-    colors = ['blue', 'green', 'red', 'orange', 'purple', 'pink']
+    # Добавляем данные на график для каждого месяца и ресторана
+    colors = ['blue', 'green', 'red', 'orange', 'purple', 'pink', 'brown', 'gray', 'olive', 'teal',
+              'navy', 'maroon', 'lime', 'aqua', 'silver', 'fuchsia', 'black', 'yellow', 'coral', 'indigo']
     i = 0
     for month, d in data.items():
-        fig.add_trace(go.Scatter(x=d['dates'], y=d['revenues'],
-                                 mode='lines+markers', name=f'Выручка за {d["dates"][0].strftime("%B")}',
-                                 line=dict(color=colors[i % len(colors)])))
-        i += 1
+        for restaurant in selected_restaurants:
+            restaurant_data = [revenue for revenue, (name, city) in zip(d['revenues'], d['restaurant']) if name == restaurant.name and city == restaurant.city]  # изменено
+            fig.add_trace(go.Scatter(x=d['dates'], y=restaurant_data,
+                                     mode='lines+markers', name=f'Выручка за {d["dates"][0].strftime("%B")} ({restaurant.name} | {restaurant.city})',
+                                     line=dict(color=colors[i % len(colors)]),
+                                     marker=dict(color=colors[i % len(colors)], size=8)))
+            i += 1
 
     # Настраиваем внешний вид графика
     fig.update_layout(
@@ -106,20 +111,24 @@ def generate_graph(report_data):
             gridcolor='lightgray'
         ),
         legend=dict(
-            x=0.5,
-            y=1.15,
-            orientation='h',
+            x=1.02,  # Adjust the x-coordinate to position the legend on the right side
+            y=1.0,   # Adjust the y-coordinate if needed
+            orientation='v',  # Set the orientation to vertical
             bgcolor='rgba(0,0,0,0)'
         ),
         plot_bgcolor='white',
         paper_bgcolor='white'
     )
 
-    return fig.to_html(full_html=False,config={'displayModeBar': False})
+    return fig.to_html(full_html=False, config={'displayModeBar': False})
 
 
-def report(request, restaurant_id, report_type_id):
-    restaurant = Restaurant.objects.get(pk=restaurant_id)
+
+@login_required  # Requires user authentication
+def consolidated_report(request, report_type_id):
+    # Get the restaurants that the user has permission to access
+    user = request.user
+    restaurants = Restaurant.objects.filter(perm_grup_fo=user.access_rights)
 
     if report_type_id == 1:
         # по умолчанию отчет за последнюю неделю
@@ -140,25 +149,70 @@ def report(request, restaurant_id, report_type_id):
                 f'{year}-W{week_number}-1', "%G-W%V-%u").date()
             end_date = start_date + datetime.timedelta(days=6)
 
-        # получаем данные из модели Report за выбранный период для выбранного ресторана
+        restaurant_ids = request.GET.getlist('restaurant_ids')
+        selected_restaurants = restaurants.filter(id__in=restaurant_ids)
+
+        # получаем данные из модели Report за выбранный период для выбранных ресторанов
         report_data = Report.objects.filter(
-            department=restaurant, data__range=[start_date, end_date])
-        graph = generate_graph(report_data)
+            department__in=selected_restaurants, data__range=[start_date, end_date])
+        graph = generate_graph(report_data, selected_restaurants)
 
         # создаем контекст для передачи данных в шаблон
         context = {
-            'title': restaurant.name,
-            'category': restaurant.category,
-            'city': restaurant.city,
-            'address': restaurant.adress,
+            'title': 'Сводный отчет по ресторанам',
+            'restaurants': restaurants,
+            'selected_restaurants': selected_restaurants,
             'report_data': report_data,
             'start_date': start_date,
-            # вычитаем 1 день, чтобы отобразить правильную конечную дату
             'end_date': end_date - datetime.timedelta(days=1),
             'graph': graph,
             'report_type': report_type_id
         }
-    return render(request, 'restaurant/report.html', context)
+
+    return render(request, 'restaurant/consolidated_report.html', context)
+
+
+# def consolidated_report(request, restaurant_id, report_type_id):
+#     restaurant = Restaurant.objects.get(pk=restaurant_id)
+
+#     if report_type_id == 1:
+#         # по умолчанию отчет за последнюю неделю
+#         end_date = datetime.date.today()
+#         start_date = end_date - datetime.timedelta(days=7)
+
+#         if request.GET.get('start_date') and request.GET.get('end_date') and not request.GET.get('week') and not request.GET.get('year'):
+#             # если переданы start_date и end_date, то фильтруем данные по этим датам
+#             start_date = datetime.datetime.strptime(
+#                 request.GET['start_date'], '%Y-%m-%d').date()
+#             end_date = datetime.datetime.strptime(
+#                 request.GET['end_date'], '%Y-%m-%d').date()
+#         elif request.GET.get('week') and request.GET.get('year'):
+#             # если передан год и номер недели, то фильтруем данные за эту неделю
+#             year = int(request.GET['year'])
+#             week_number = int(request.GET['week'])
+#             start_date = datetime.datetime.strptime(
+#                 f'{year}-W{week_number}-1', "%G-W%V-%u").date()
+#             end_date = start_date + datetime.timedelta(days=6)
+
+#         # получаем данные из модели Report за выбранный период для выбранного ресторана
+#         report_data = Report.objects.filter(
+#             department=restaurant, data__range=[start_date, end_date])
+#         graph = generate_graph(report_data)
+
+#         # создаем контекст для передачи данных в шаблон
+#         context = {
+#             'title': restaurant.name,
+#             'category': restaurant.category,
+#             'city': restaurant.city,
+#             'address': restaurant.adress,
+#             'report_data': report_data,
+#             'start_date': start_date,
+#             # вычитаем 1 день, чтобы отобразить правильную конечную дату
+#             'end_date': end_date - datetime.timedelta(days=1),
+#             'graph': graph,
+#             'report_type': report_type_id
+#         }
+#     return render(request, 'restaurant/consolidated_report.html', context)
 
 
 def report_week_and_mounth(request, report_type_id):

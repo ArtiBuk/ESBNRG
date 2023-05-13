@@ -45,10 +45,10 @@
         <thead>
           <tr>
             <th>Ресторан</th>
-            <th>Факт</th>
-            <th>Себестоимость</th>
-            <th>Количество чеков</th>
-            <th>План</th>
+            <th>Факт руб.</th>
+            <th>Себестоимость руб.</th>
+            <th>Количество чеков шт.</th>
+            <th>План руб.</th>
             <th>Отклонение</th>
           </tr>
         </thead>
@@ -56,11 +56,11 @@
           {% for data in report_data %}
           <tr>
             <td>{{ data.department__name }} {{ data.department__city }}</td>
-            <td class="revenue">{{ data.revenue }} руб.</td>
-            <td>{{ data.cost_price }} руб.</td>
-            <td>{{ data.number_of_checks }} шт.</td>
+            <td class="revenue">{{ data.revenue }}</td>
+            <td>{{ data.cost_price }}</td>
+            <td>{{ data.number_of_checks }} </td>
               <td>
-                <input type="text" name="fact_value_{{ forloop.counter }}" class="fact-input" value="0" onfocus="if (this.value == '0') {this.value = '';}" onblur="if (this.value == '') {this.value = '0';}" pattern="[0-9]+" maxlength="10" /> руб.
+                <input type="text" name="fact_value_{{ forloop.counter }}" class="fact-input" value="0" onfocus="if (this.value == '0') {this.value = '';}" onblur="if (this.value == '') {this.value = '0';}" pattern="[0-9]+" maxlength="10" /> 
               </td>
               <td class="deviation"></td>
             </tr>
@@ -92,7 +92,7 @@
     const revenue = parseFloat(row.querySelector('.revenue').textContent);
     const factValue = parseFloat(row.querySelector('.fact-input').value);
     let deviation = (revenue / factValue - 1) * 100 || 0;
-    deviation = Math.max(-1000, Math.min(1000, deviation)); // Ограничиваем результат в диапазоне от -100 до 100
+    deviation = Math.max(-100, Math.min(100, deviation)); // Ограничиваем результат в диапазоне от -100 до 100
     const deviationCell = row.querySelector('.deviation');
     deviationCell.textContent = deviation.toFixed(2) + '%';
   

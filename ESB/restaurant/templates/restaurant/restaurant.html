@@ -18,6 +18,7 @@
             <span style="margin-bottom: 10px;">Виды отчётов:</span>
             <a style="padding-bottom: 5px; cursor: pointer;" href="{% url 'restaurant:week_mounth_results' report_type_id=report_types.1.id %}" class="btn btn-outline-success">{{ report_types.1.name_report }}</a>
             <a style="cursor: pointer;" href="{% url 'restaurant:week_mounth_results' report_type_id=report_types.2.id %}" class="btn btn-outline-success">{{ report_types.2.name_report }}</a>
+            <a href="{% url 'restaurant:report_type' report_types.0.id %}" style=style="cursor: pointer;" class="btn btn-outline-success">{{ report_types.0.name_report }}</a> 
         </div>
         {% endif %}
     </div>
@@ -47,11 +48,11 @@
                                 <h5>{{restaurant.adress}}</h5>
                                 <p class="card-text">{{restaurant.short_description}}</p>
                             </div>
-                            {% if report_types %}
-                            <a href="{% url 'restaurant:report_type' restaurant.id report_types.0.id %}" style="background-color: transparent; width: 100%;">
+                            {% comment %} {% if report_types %}
+                            <a href="{% url 'restaurant:report_type' report_types.0.id %}" style="background-color: transparent; width: 100%;">
                                 <button class="buttonReport">{{ report_types.0.name_report }}</button>
-                            </a>
-                            {% endif %}
+                            </a>                            
+                            {% endif %} {% endcomment %}
                         </div>
                     </div>
                     {% endfor %}

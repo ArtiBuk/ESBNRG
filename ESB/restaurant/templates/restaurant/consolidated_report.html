@@ -16,6 +16,19 @@
           <div style="display: flex; gap: 30px; margin-bottom: 20px;">
             <div class="settingsItem">
               <div class="items">
+                <label for="restaurant_ids">Рестораны:</label>
+                <select id="restaurant_ids" name="restaurant_ids" class="form-control" multiple>
+                  {% for restaurant in restaurants %}
+                    {% if restaurant in selected_restaurants %}
+                      <option value="{{ restaurant.id }}" selected>{{ restaurant.name }} ({{ restaurant.city }})</option>
+                    {% else %}
+                      <option value="{{ restaurant.id }}">{{ restaurant.name }} ({{ restaurant.city }})</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+                               
+              <div class="items">
                 <label for="start_date">Начало периода:</label>
                 <input
                   type="date"
@@ -67,6 +80,45 @@
         {% if start_date and end_date %}
         <p>Период с {{ start_date }} по {{ end_date }}</p>
         {% endif %}
+      
+        {% for restaurant in selected_restaurants %}
+        <h2>{{ restaurant.name }} ({{restaurant.city}})</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Год</th>
+              <th>№ нед</th>
+              <th>Месяц</th>
+              <th>День</th>
+              <th>Выручка (руб.)</th>
+              <th>Себестоимость (руб.)</th>
+              <th>Кол-во чеков (шт.)</th>
+              <th>Ср. чек (руб.)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for report in report_data %}
+            {% if report.department == restaurant %}
+            <tr>
+              <td>{{ report.data|date:'Y' }}</td>
+              <td>{{ report.number_week }}</td>
+              <td>{{ report.data|date:'F' }}</td>
+              <td>{{ report.data|date:'j' }} {{ report.weekdays }}</td>
+              <td>{{ report.revenue }}</td>
+              <td>{{ report.cost_price }}</td>
+              <td>{{ report.number_of_checks }}</td>
+              <td>{% widthratio report.revenue report.number_of_checks 1 %}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+        {% endfor %}
+      </div>          
+      {% comment %} <div class="tableBox">
+        {% if start_date and end_date %}
+        <p>Период с {{ start_date }} по {{ end_date }}</p>
+        {% endif %}
         <table class="table">
           <thead>
             <tr>
@@ -95,7 +147,7 @@
             {% endfor %}
           </tbody>
         </table>
-      </div>
+      </div> {% endcomment %}
       {% if report_type == 1 %} {% if graph %}
       <div class="col-lg-12">{{ graph|safe }}</div>
       {% endif %} {% endif %}
