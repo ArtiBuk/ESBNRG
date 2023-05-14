@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from django.contrib.auth.decorators import login_required
 from restaurant.models import Restaurant, RestaurantCategory, Report, ReportType
 from django.db.models import Q
@@ -173,53 +173,13 @@ def consolidated_report(request, report_type_id):
     return render(request, 'restaurant/consolidated_report.html', context)
 
 
-def report_week_and_mounth(request, report_type_id):
+def week_report(request, report_type_id):
     user = request.user
     report_type = ReportType.objects.get(pk=report_type_id)
-    accessible_restaurants = Restaurant.objects.filter(perm_grup_fo=user.access_rights)
+    accessible_restaurants = Restaurant.objects.filter(
+        perm_grup_fo=user.access_rights)
 
-    print(report_type_id)
-    if report_type_id == 2:
-        report_name = report_type.name_report
-        if 'month' in request.GET and 'year' in request.GET:
-            # если переданы месяц и год, то фильтруем данные за этот месяц и год
-            current_month = int(request.GET['month'])
-            current_year = int(request.GET['year'])
-
-            report_data = Report.objects.filter(
-                department__in=accessible_restaurants,  # filter by accessible restaurants
-                data__year=current_year,
-                data__month=current_month,
-                department__isnull=False
-            ).select_related('department').values('department__name', 'department__city').annotate(
-                revenue=Sum('revenue'),
-                cost_price=Sum('cost_price'),
-                number_of_checks=Sum('number_of_checks')
-            ).order_by('department')
-
-            for i, data in enumerate(report_data):
-                revenue = data['revenue']
-                fact_value = request.POST.get(f'fact_value_{i+1}', 1) or 1
-                deviation = (revenue / Decimal(fact_value) -
-                             1) if float(fact_value) else 0
-                data['deviation'] = deviation
-        else:
-            report_data = None
-            current_month = None
-            current_year = None
-
-        context = {
-            'title': 'NRG',
-            'report_name': report_name,
-            'report_data': report_data,
-            'current_month': current_month,
-            'current_year': current_year,
-            'report_type_id': report_type_id,
-        }
-
-        return render(request, 'restaurant/week_mounth_results.html', context)
-
-    elif report_type_id == 3:
+    if report_type_id == 3:
         report_name = report_type.name_report
         if 'week' in request.GET and 'year' in request.GET:
             # если переданы номер недели и год, то фильтруем данные за эту неделю
@@ -251,6 +211,62 @@ def report_week_and_mounth(request, report_type_id):
             'report_type_id': report_type_id,
         }
 
-        return render(request, 'restaurant/week_mounth_results.html', context)
+        return render(request, 'restaurant/week_results.html', context)
 
-    return render(request, 'restaurant/week_mounth_results.html', context)
+
+def mounth_report(request, report_type_id):
+    user = request.user
+    report_type = ReportType.objects.get(pk=report_type_id)
+    accessible_restaurants = Restaurant.objects.filter(
+        perm_grup_fo=user.access_rights)
+    if report_type_id == 2:
+        report_name = report_type.name_report
+        if 'month' in request.GET and 'year' in request.GET and 'compare_month' in request.GET and 'compare_year' in request.GET:
+            # если переданы месяц и год, то фильтруем данные за этот месяц и год
+            current_month = int(request.GET['month'])
+            current_year = int(request.GET['year'])
+            compare_month = int(request.GET['compare_month'])
+            compare_year = int(request.GET['compare_year'])
+
+            report_data = Report.objects.filter(
+                department__in=accessible_restaurants,  # filter by accessible restaurants
+                data__year=current_year,
+                data__month=current_month,
+                department__isnull=False
+            ).select_related('department').values('department__name', 'department__city').annotate(
+                revenue=Sum('revenue'),
+                cost_price=Sum('cost_price'),
+                number_of_checks=Sum('number_of_checks')
+            ).order_by('department')
+
+            compare_report_data = Report.objects.filter(
+                department__in=accessible_restaurants,  # filter by accessible restaurants
+                data__year=compare_year,
+                data__month=compare_month,
+                department__isnull=False
+            ).select_related('department').values('department__name', 'department__city').annotate(
+                compare_revenue=Sum('revenue'),
+                compare_cost_price=Sum('cost_price'),
+                compare_number_of_checks=Sum('number_of_checks')
+            ).order_by('department')
+        else:
+            report_data = None
+            compare_report_data = None
+            current_month = None
+            current_year = None
+            compare_month = None
+            compare_year = None
+
+        context = {
+            'title': 'NRG',
+            'report_name': report_name,
+            'report_data': report_data,
+            'compare_report_data': compare_report_data,
+            'current_month': current_month,
+            'current_year': current_year,
+            'compare_month': compare_month,
+            'compare_year': compare_year,
+            'report_type_id': report_type_id,
+        }
+
+        return render(request, 'restaurant/mounth_results.html', context)

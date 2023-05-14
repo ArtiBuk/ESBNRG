@@ -1,0 +1,208 @@
+{% extends 'restaurant/base.html' %}
+{% load static %} 
+{% block scss %}
+  <link href="{% static 'css/Style_report.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="content">
+    <div style="display: flex; align-items: center; flex-direction: column;">
+      <div class="block" style="width: fit-content;">
+        {% if report_name %}
+        <h2>{{ report_name }}</h2>
+        {% if report_type_id == 2 %}
+        <form method="get" style="display: flex; gap: 20px; align-items:center">
+          <div style="display: flex; gap: 20px;">
+            <div class="">
+              <label for="year_number">Год:</label>
+              <input type="number" id="year_number" name="year" class="form-control" min="2022" max="2023" value="{{ current_year }}" />
+            </div>
+            <div class="">
+              <label for="month_number">Месяц:</label>
+              <input type="number" id="month_number" name="month" class="form-control" min="1" max="12" value="{{ current_month }}" />
+            </div>
+          </div>
+          <div style="display: flex; gap: 20px;">
+            <div class="">
+              <label for="compare_year_number">Год для сравнения:</label>
+              <input type="number" id="compare_year_number" name="compare_year" class="form-control" min="2022" max="2023" value="{{ compare_year }}" />
+            </div>
+            <div class="">
+              <label for="compare_month_number">Месяц для сравнения:</label>
+              <input type="number" id="compare_month_number" name="compare_month" class="form-control" min="1" max="12" value="{{ compare_month }}" />
+            </div>
+          </div>
+          <button type="submit" class="buttonR">Показать</button>
+        </form>
+        {% endif %}
+      </div>
+      <div class="tableBox">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Ресторан</th>
+            <th>Факт выбранный месяц (руб.)</th>
+            <th>Себестоимость выбранный месяц (руб.)</th>
+            <th>Количество чеков выбранный месяц (шт.)</th>
+            <th>Ср. кол-во чеков выбранный месяц (шт.)</th>
+            <th>Факт месяц сравнения (руб.)</th>
+            <th>Себестоимость месяц сравнения (руб.)</th>
+            <th>Количество чеков месяц сравнения (шт.)</th>
+            <th>Ср. чек выбранный месяц (шт.)</th>
+            <th>Прирост/Убыль в % суммы выручки</th>
+            <th>Прирост/Убыль в % ср. чека</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for data in report_data %}
+          <tr>
+            <td>{{ data.department__name }} {{ data.department__city }}</td>
+            <td class="revenue_now">{{ data.revenue }}</td>
+            <td class="cost_price_now">{{ data.cost_price }}</td>
+            <td class="number_of_checks_now">{{ data.number_of_checks }} </td>
+            <td class="average_check_now">{% widthratio data.revenue data.number_of_checks 1 %}</td>
+            {% for compare_data in compare_report_data %}
+              {% if compare_data.department__name == data.department__name and compare_data.department__city == data.department__city %}
+                <td class="compare_revenue">{{ compare_data.compare_revenue }}</td>
+                <td class="compare_cost_price">{{ compare_data.compare_cost_price }}</td>
+                <td class="compare_number_of_checks">{{ compare_data.compare_number_of_checks }}</td>
+                <td class="compare_average_check">{% widthratio compare_data.compare_revenue compare_data.compare_number_of_checks 1 %}</td>
+                <td class="gain_loss_revenue"></td>
+                <td class="gain_loss_average_check"></td>
+              {% endif %} 
+            {% endfor %}
+          </tr>
+          {% endfor %}
+            <tr>
+              <td>ИТОГ</td>
+              <td class="total-revenue-now"></td>
+              <td class="total-cost-price-now"></td>
+              <td class="total-number-of-checks-now"></td>
+              <td class="total-average-check-now"></td>
+              <td class="total-compare-revenue"></td>
+              <td class="total-compare-cost-price"></td>
+              <td class="total-compare-number-of-checks"></td>
+              <td class="total-compare-average-check"></td>
+              <td class="total-gain-loss-revenue"></td>
+              <td class="total-gain-loss-average-check"></td>
+            </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    {% else %}
+    <p>Не удалось определить тип отчета</p>
+    {% endif %}
+  </div>
+</div>
+</div>
+  {% endblock %}
+  {% block script %}
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      // функция для суммирования значений в ячейках
+      function sumCells(cells) {
+        let total = 0;
+        cells.forEach((cell) => {
+          const value = parseFloat(cell.textContent);
+          if (!isNaN(value)) {
+            total += value;
+          }
+        });
+        return total;
+      }
+
+      // функция для обновления общих значений (total-cost-price, total-number-of-checks и total-revenue)
+      function calculateTotals() {
+        const revenueCellsNow = document.querySelectorAll('.revenue_now');
+        const totalRevenueNow = sumCells(revenueCellsNow);
+        document.querySelector('.total-revenue-now').textContent = totalRevenueNow;
+
+        const costPriceCellsNow = document.querySelectorAll('.cost_price_now');
+        const totalCostPriceNow = sumCells(costPriceCellsNow);
+        document.querySelector('.total-cost-price-now').textContent = totalCostPriceNow;
+
+        const numberOfChecksCellsNow = document.querySelectorAll('.number_of_checks_now');
+        const totalNumberOfChecksNow = sumCells(numberOfChecksCellsNow);
+        document.querySelector('.total-number-of-checks-now').textContent = totalNumberOfChecksNow;
+
+        const revenueCellsCompare = document.querySelectorAll('.compare_revenue');
+        const totalRevenueCompare = sumCells(revenueCellsCompare);
+        document.querySelector('.total-compare-revenue').textContent = totalRevenueCompare;
+
+        const costPriceCellsCompare = document.querySelectorAll('.compare_cost_price');
+        const totalCostPriceCompare = sumCells(costPriceCellsCompare);
+        document.querySelector('.total-compare-cost-price').textContent = totalCostPriceCompare;
+
+        const numberOfChecksCellsCompare = document.querySelectorAll('.compare_number_of_checks');
+        const totalNumberOfChecksCompare = sumCells(numberOfChecksCellsCompare);
+        document.querySelector('.total-compare-number-of-checks').textContent = totalNumberOfChecksCompare;
+
+        const averageCheckCellsCompare = document.querySelectorAll('.compare_average_check');
+        const totalAverageCheckCompare = sumCells(averageCheckCellsCompare);
+        document.querySelector('.total-compare-average-check').textContent = totalAverageCheckCompare;
+
+        const averageCheckCellsNow = document.querySelectorAll('.average_check_now');
+        const totalAverageCheckNow = sumCells(averageCheckCellsNow);
+        document.querySelector('.total-average-check-now').textContent = totalAverageCheckNow;
+
+        const gainLossRevenue = document.querySelectorAll('.gain_loss_revenue');
+        const totalGainLossRevenue = sumCells(gainLossRevenue);
+        document.querySelector('.total-gain-loss-revenue').textContent = totalGainLossRevenue;
+
+        const gainLossAverageCheckCellsNow = document.querySelectorAll('.gain_loss_average_check');
+        const totalGainLossAverageCheck = sumCells(gainLossAverageCheckCellsNow);
+        document.querySelector('.total-gain-loss-average-check').textContent = totalGainLossAverageCheck.toFixed(1);
+          // Подсветка красным или зеленым цветом
+        if (totalGainLossRevenue < 0) {
+          document.querySelector('.total-gain-loss-revenue').style.color = 'red';
+        } else {
+          document.querySelector('.total-gain-loss-revenue').style.color = 'green';
+        }
+
+        if (totalGainLossAverageCheck < 0) {
+          document.querySelector('.total-gain-loss-average-check').style.color = 'red';
+        } else {
+          document.querySelector('.total-gain-loss-average-check').style.color = 'green';
+        }
+      }
+      // вызываем функцию для расчета и обновления общих значений
+      const rows = document.querySelectorAll('tbody tr');
+
+      rows.forEach(row => {
+        const revenueNow = parseFloat(row.querySelector('.revenue_now').textContent);
+        const compareRevenue = parseFloat(row.querySelector('.compare_revenue').textContent);
+        const numberChecksNow = parseFloat(row.querySelector('.average_check_now').textContent);
+        const compareNumberChecks = parseFloat(row.querySelector('.compare_average_check').textContent);
+
+        const gainLossRevenue = row.querySelector('.gain_loss_revenue');
+        const gainLossAverageCheck = row.querySelector('.gain_loss_average_check');
+
+        const revenueChange = (revenueNow / compareRevenue -1 )*100;
+        const averageCheckChange = ((numberChecksNow - compareNumberChecks ) / compareNumberChecks) * 100;
+
+        gainLossRevenue.textContent = revenueChange.toFixed(1);
+        gainLossAverageCheck.textContent = averageCheckChange.toFixed(1);
+
+        if (revenueChange < 0) {
+          gainLossRevenue.style.color = 'red';
+        } else {
+          gainLossRevenue.style.color = 'green';
+        }
+      
+        if (averageCheckChange < 0) {
+          gainLossAverageCheck.style.color = 'red';
+        } else {
+          gainLossAverageCheck.style.color = 'green';
+        }
+        calculateTotals();
+      });
+    });
+  </script>
+{% endblock %}
+{% block footer %}
+  <footer>
+      <p class="">by ArtiBuk</p>
+  </footer>
+{% endblock %}
