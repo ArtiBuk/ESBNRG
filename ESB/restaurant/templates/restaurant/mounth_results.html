@@ -112,6 +112,111 @@
         });
         return total;
       }
+    
+      // функция для обновления общих значений (total-cost-price, total-number-of-checks и total-revenue)
+      function calculateTotals() {
+        const revenueCellsNow = document.querySelectorAll('.revenue_now');
+        const totalRevenueNow = sumCells(revenueCellsNow);
+        document.querySelector('.total-revenue-now').textContent = totalRevenueNow;
+    
+        const costPriceCellsNow = document.querySelectorAll('.cost_price_now');
+        const totalCostPriceNow = sumCells(costPriceCellsNow);
+        document.querySelector('.total-cost-price-now').textContent = totalCostPriceNow;
+    
+        const numberOfChecksCellsNow = document.querySelectorAll('.number_of_checks_now');
+        const totalNumberOfChecksNow = sumCells(numberOfChecksCellsNow);
+        document.querySelector('.total-number-of-checks-now').textContent = totalNumberOfChecksNow;
+    
+        const revenueCellsCompare = document.querySelectorAll('.compare_revenue');
+        const totalRevenueCompare = sumCells(revenueCellsCompare);
+        document.querySelector('.total-compare-revenue').textContent = totalRevenueCompare;
+    
+        const costPriceCellsCompare = document.querySelectorAll('.compare_cost_price');
+        const totalCostPriceCompare = sumCells(costPriceCellsCompare);
+        document.querySelector('.total-compare-cost-price').textContent = totalCostPriceCompare;
+    
+        const numberOfChecksCellsCompare = document.querySelectorAll('.compare_number_of_checks');
+        const totalNumberOfChecksCompare = sumCells(numberOfChecksCellsCompare);
+        document.querySelector('.total-compare-number-of-checks').textContent = totalNumberOfChecksCompare;
+    
+        const averageCheckCellsCompare = document.querySelectorAll('.compare_average_check');
+        const totalAverageCheckCompare = sumCells(averageCheckCellsCompare);
+        document.querySelector('.total-compare-average-check').textContent = totalAverageCheckCompare;
+    
+        const averageCheckCellsNow = document.querySelectorAll('.average_check_now');
+        const totalAverageCheckNow = sumCells(averageCheckCellsNow);
+        document.querySelector('.total-average-check-now').textContent = totalAverageCheckNow;
+    
+        const totalGainLossRevenueElement = document.querySelector('.total-gain-loss-revenue');
+        const totalGainLossAverageCheckElement = document.querySelector('.total-gain-loss-average-check');
+    
+        const totalGainLossRevenue = (totalRevenueNow / totalRevenueCompare - 1) * 100;
+        const totalGainLossAverageCheck = ((totalAverageCheckNow - totalAverageCheckCompare) / totalAverageCheckCompare) * 100;
+    
+        totalGainLossRevenueElement.textContent = totalGainLossRevenue.toFixed(1);
+        totalGainLossAverageCheckElement.textContent = totalGainLossAverageCheck.toFixed(1);
+    
+        if (totalGainLossRevenue < 0) {
+          totalGainLossRevenueElement.style.color = 'red';
+        } else {
+          totalGainLossRevenueElement.style.color = 'green';
+        }
+    
+        if (totalGainLossAverageCheck < 0) {
+          totalGainLossAverageCheckElement.style.color = 'red';
+        } else {
+          totalGainLossAverageCheckElement.style.color = 'green';
+        }
+      }
+      calculateTotals();
+      // вызываем функцию для расчета и обновления общих значений
+      const rows = document.querySelectorAll('tbody tr');
+
+      rows.forEach(row => {
+        const revenueNow = parseFloat(row.querySelector('.revenue_now').textContent);
+        const compareRevenue = parseFloat(row.querySelector('.compare_revenue').textContent);
+        const numberChecksNow = parseFloat(row.querySelector('.average_check_now').textContent);
+        const compareNumberChecks = parseFloat(row.querySelector('.compare_average_check').textContent);
+
+        const gainLossRevenue = row.querySelector('.gain_loss_revenue');
+        const gainLossAverageCheck = row.querySelector('.gain_loss_average_check');
+
+        const revenueChange = (revenueNow / compareRevenue -1 )*100;
+        const averageCheckChange = ((numberChecksNow - compareNumberChecks ) / compareNumberChecks) * 100;
+
+        gainLossRevenue.textContent = revenueChange.toFixed(1);
+        gainLossAverageCheck.textContent = averageCheckChange.toFixed(1);
+
+        if (revenueChange < 0) {
+          gainLossRevenue.style.color = 'red';
+        } else {
+          gainLossRevenue.style.color = 'green';
+        }
+      
+        if (averageCheckChange < 0) {
+          gainLossAverageCheck.style.color = 'red';
+        } else {
+          gainLossAverageCheck.style.color = 'green';
+        }
+        calculateTotals();
+      });
+    });
+  </script>
+{% endblock %}
+  {% comment %} {% block script %}
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      // функция для суммирования значений в ячейках
+      function sumCells(cells) {
+        let total = 0;
+        cells.forEach((cell) => {
+          const value = parseFloat(cell.textContent);
+          if (!isNaN(value)) {
+            total += value;
+          }
+        });
+        return total;
+      }
 
       // функция для обновления общих значений (total-cost-price, total-number-of-checks и total-revenue)
       function calculateTotals() {
@@ -149,7 +254,7 @@
 
         const gainLossRevenue = document.querySelectorAll('.gain_loss_revenue');
         const totalGainLossRevenue = sumCells(gainLossRevenue);
-        document.querySelector('.total-gain-loss-revenue').textContent = totalGainLossRevenue;
+        document.querySelector('.total-gain-loss-revenue').textContent = totalGainLossRevenue.toFixed(1);
 
         const gainLossAverageCheckCellsNow = document.querySelectorAll('.gain_loss_average_check');
         const totalGainLossAverageCheck = sumCells(gainLossAverageCheckCellsNow);
@@ -200,7 +305,7 @@
       });
     });
   </script>
-{% endblock %}
+{% endblock %} {% endcomment %}
 {% block footer %}
   <footer>
       <p class="">by ArtiBuk</p>

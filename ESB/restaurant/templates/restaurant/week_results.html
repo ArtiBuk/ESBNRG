@@ -10,21 +10,7 @@
       <div class="block" style="width: fit-content;">
         {% if report_name %}
         <h2>{{ report_name }}</h2>
-        {% if report_type_id == 2 %}
-        <form method="get" style="display: flex; gap: 20px; align-items:center">
-          <div style="display: flex; gap: 20px;">
-            <div class="">
-              <label for="year_number">Год:</label>
-              <input type="number" id="year_number" name="year" class="form-control" min="2022" max="2023" value="{{ current_year }}" />
-            </div>
-            <div class="">
-              <label for="month_number">Месяц:</label>
-              <input type="number" id="month_number" name="month" class="form-control" min="1" max="12" value="{{ current_month }}" />
-            </div>
-          </div>
-          <button type="submit" class="buttonR">Показать</button>
-        </form>
-        {% elif report_type_id == 3 %}
+        {% if report_type_id == 3 %}
         <form method="get" style="display: flex; gap: 20px; align-items:center">
           <div style="display: flex; gap: 20px;">
             <div class="">
@@ -36,48 +22,80 @@
               <input type="number" id="week_number" name="week" class="form-control" min="1" max="53" value="{{ current_week }}" />
             </div>
           </div>
+          <div style="display: flex; gap: 20px;">
+            <div class="">
+              <label for="year_number">Год сравнения:</label>
+              <input type="number" id="year_number" name="compare_year" class="form-control" min="2022" max="2023" value="{{ current_year }}" />
+            </div>
+            <div class="">
+              <label for="week_number">Неделя сравнения:</label>
+              <input type="number" id="week_number" name="compare_week" class="form-control" min="1" max="53" value="{{ current_week }}" />
+            </div>
+          </div>
           <button type="submit" class="buttonR">Показать</button>
         </form>
         {% endif %}
       </div>
       <div class="tableBox">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Ресторан</th>
-            <th>Факт руб.</th>
-            <th>Себестоимость руб.</th>
-            <th>Количество чеков шт.</th>
-            <th>План руб.</th>
-            <th>Отклонение</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for data in report_data %}
-          <tr>
-            <td>{{ data.department__name }} {{ data.department__city }}</td>
-            <td class="revenue">{{ data.revenue }}</td>
-            <td>{{ data.cost_price }}</td>
-            <td>{{ data.number_of_checks }} </td>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th colspan="2">Дней в месяце</th>
+              <th>Количество дней в месяце</th>
+              <th colspan="7">Отработано дней</th>
+              <th>Прошло дней с начала месяца</th>
+            </tr>
+            <tr>
+              <th colspan="2">Направление</th>
+              <th colspan="6"></th>
+              <th>Сколько дней от начала месяца</th>
+              <th>Количество дней от начала месяца</th>
+            </tr>
+            <tr>
+              <th colspan="1">Категории и название ресторанов</th>
+              <th>Выручка за выбранную неделю (руб.)</th>
+              <th>Средня выручка за прошлый месяц (руб.)</th>
+              <th>Выручка/Среднее (%)</th>
+              <th>План (руб.)</th>
+              <th>Выручка/Бюджет (%)</th>
+              <th>Выручка за 2022 (руб.)</th>
+              <th>Выручка/Выручка за 2022 (%)</th>
+              <th>Выручка с 1 числа по конец выбранной недели(руб.)</th>
+              <th>План(руб.)</th>
+              <th>Выручка/План(%)</th>
+              <th>Выручка за 2022(тот же период)(руб.)</th>
+              <th>Выручка/Выручка за 2022(%)</th>
+              <th>Бюджет "месяц в котором выбранная неделя"</th>
+              <th>Выполнение (%)</th>
+            </tr>
+          </thead>
+          
+          <tbody>
+            {% for data in report_data %}
+            <tr>
+              <td class="categories_names_of_restaurants">{{ data.department__name }} {{ data.department__city }}</td>
+              <td class="revenue_for_the_selected_week">{{ data.revenue_selected_week }}</td>
+              <td class="average_revenue_last_month">{{ data.compare_revenue }}</td>
+              <td class="revenue_average">%</td>
+              <td class="plan_1">руб</td>
+              <td class="revenue_budget">%</td>
+              <td class="revenue_for_2022">{{ data.revenue_for_last_year }}</td>
+              <td class="revenue_revenue_for_2022">%</td>
+              <td class="revenue_from">{{ data.revenue_from }}</td>
+              <td class="plan_2">руб</td>
+              <td class="revenue_plan_2">%</td>
+              <td class="revenue_for_2022_same_period">{{ data.revenue_for_last_year_same_period }}</td>
+              <td class="revenue_2_revenue_for_2022">%</td>
               <td>
-                <input type="text" name="fact_value_{{ forloop.counter }}" class="fact-input" value="0" onfocus="if (this.value == '0') {this.value = '';}" onblur="if (this.value == '') {this.value = '0';}" pattern="[0-9]+" maxlength="10" /> 
+                <input type="text" name="budget{{ forloop.counter }}" class="budget" value="0" onfocus="if (this.value == '0') {this.value = '';}" onblur="if (this.value == '') {this.value = '0';}" pattern="[0-9]+" maxlength="10" /> 
               </td>
-              <td class="deviation"></td>
+              <td class="performance">%</td>
             </tr>
             {% endfor %}
-            <tr>
-              <td>ИТОГ</td>
-              <td class="total-revenue"></td>
-              <td class="total-cost-price"></td>
-              <td class="total-number-of-checks"></td>
-              <td class="total-fact_value_"></td>
-              <td class="total-deviation"></td>
-            </tr>
-        </tbody>
-      </table>
+          </tbody>
+        </table>
       </div>
     </div>
-
     {% else %}
     <p>Не удалось определить тип отчета</p>
     {% endif %}
@@ -85,7 +103,7 @@
 </div>
 </div>
   {% endblock %}
-  {% block script %}
+  {% comment %} {% block script %}
   <script>
   // функция для рассчета отклонения
   function calculateDeviation(row) {
@@ -179,7 +197,7 @@
     calculateTotals();
   
   </script>
-  {% endblock %}
+  {% endblock %} {% endcomment %}
   
 {% block footer %}
   <footer>
