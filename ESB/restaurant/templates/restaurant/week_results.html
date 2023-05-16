@@ -1,5 +1,6 @@
 {% extends 'restaurant/base.html' %}
 {% load static %} 
+{% load humanize %}
 {% block scss %}
   <link href="{% static 'css/Style_report.css' %}" rel="stylesheet" />
 {% endblock %}
@@ -15,7 +16,7 @@
           <div style="display: flex; gap: 20px;">
             <div class="">
               <label for="year_number">Год:</label>
-              <input type="number" id="year_number" name="year" class="form-control" min="2022" max="2023" value="{{ current_year }}" />
+              <input type="number" id="year_number" name="year" class="form-control" min="2022" max="2024" value="{{ current_year }}" />
             </div>
             <div class="">
               <label for="week_number">Неделя:</label>
@@ -24,12 +25,12 @@
           </div>
           <div style="display: flex; gap: 20px;">
             <div class="">
-              <label for="year_number">Год сравнения:</label>
-              <input type="number" id="year_number" name="compare_year" class="form-control" min="2022" max="2023" value="{{ current_year }}" />
+              <label for="compare_year_number">Год сравнения:</label>
+              <input type="number" id="compare_year_number" name="compare_year" class="form-control" min="2022" max="2024" value="{{ compare_year }}" />
             </div>
             <div class="">
-              <label for="week_number">Неделя сравнения:</label>
-              <input type="number" id="week_number" name="compare_week" class="form-control" min="1" max="53" value="{{ current_week }}" />
+              <label for="compare_week_number">Неделя сравнения:</label>
+              <input type="number" id="compare_week_number" name="compare_week" class="form-control" min="1" max="53" value="{{ compare_week }}" />
             </div>
           </div>
           <button type="submit" class="buttonR">Показать</button>
@@ -41,21 +42,15 @@
           <thead>
             <tr>
               <th colspan="2">Дней в месяце</th>
-              <th>Количество дней в месяце</th>
+              <th class="first_day_number">{{ first_day_number|date:"t" }}</th>
               <th colspan="7">Отработано дней</th>
-              <th>Прошло дней с начала месяца</th>
-            </tr>
-            <tr>
-              <th colspan="2">Направление</th>
-              <th colspan="6"></th>
-              <th>Сколько дней от начала месяца</th>
-              <th>Количество дней от начала месяца</th>
+              <th class="end_day_number">{{end_day_number }}</th>
             </tr>
             <tr>
               <th colspan="1">Категории и название ресторанов</th>
               <th>Выручка за выбранную неделю (руб.)</th>
-              <th>Средня выручка за прошлый месяц (руб.)</th>
-              <th>Выручка/Среднее (%)</th>
+              <th>Выручка сравнения недели (руб.)</th>
+              <th>Выручка неделя 1/Выручка неделя 2 (%)</th>
               <th>План (руб.)</th>
               <th>Выручка/Бюджет (%)</th>
               <th>Выручка за 2022 (руб.)</th>
@@ -71,29 +66,52 @@
           </thead>
           
           <tbody>
-            {% for data in report_data %}
-            <tr>
-              <td class="categories_names_of_restaurants">{{ data.department__name }} {{ data.department__city }}</td>
-              <td class="revenue_for_the_selected_week">{{ data.revenue_selected_week }}</td>
-              <td class="average_revenue_last_month">{{ data.compare_revenue }}</td>
-              <td class="revenue_average">%</td>
-              <td class="plan_1">руб</td>
-              <td class="revenue_budget">%</td>
-              <td class="revenue_for_2022">{{ data.revenue_for_last_year }}</td>
-              <td class="revenue_revenue_for_2022">%</td>
-              <td class="revenue_from">{{ data.revenue_from }}</td>
-              <td class="plan_2">руб</td>
-              <td class="revenue_plan_2">%</td>
-              <td class="revenue_for_2022_same_period">{{ data.revenue_for_last_year_same_period }}</td>
-              <td class="revenue_2_revenue_for_2022">%</td>
-              <td>
-                <input type="text" name="budget{{ forloop.counter }}" class="budget" value="0" onfocus="if (this.value == '0') {this.value = '';}" onblur="if (this.value == '') {this.value = '0';}" pattern="[0-9]+" maxlength="10" /> 
-              </td>
-              <td class="performance">%</td>
-            </tr>
+            {% regroup report_data by department__category__name as category_data %}
+            {% for category in category_data %}
+              <tr class="category-{{ category.grouper }}">
+                <th colspan="14">{{ category.grouper }}</th>
+              </tr>
+              {% for data in category.list %}
+                <tr>
+                  <td class="categories_names_of_restaurants">{{ data.department__name }}&nbsp;{{ data.department__city }}</td>
+                  <td class="revenue">{{ data.revenue_selected_week|floatformat:0 }}</td>
+                  {% for data_compare in compare_report_data %}
+                    {% if data.department__name == data_compare.department__name and data.department__city == data_compare.department__city %}
+                      <td class="compary_revenue_last_month">{{ data_compare.compare_revenue_selected_week|floatformat:0 }}</td>
+                    {% endif %}
+                  {% endfor %}
+                  <td class="revenue_compary_revenue"></td>
+                  <td class="plan_1"></td>
+                  <td class="revenue_budget"></td>
+                    {% for data_previous in previous_year_data %}
+                      {% if data.department__name == data_previous.department__name and data.department__city == data_previous.department__city %}
+                          <td class="revenue_2022">{{ data_previous.revenue_for_last_year|floatformat:0 }}</td>
+                      {% endif %}
+                    {% endfor %}
+                  <td class="revenue_revenue_for_2022">%</td>
+                  {% for data_from in report_data_from %}
+                    {% if data.department__name == data_from.department__name and data.department__city == data_from.department__city %}
+                      <td class="revenue_from">{{data_from.revenue_from|floatformat:0}}</td>
+                    {% endif %}
+                  {% endfor %}
+                  <td class="plan_2"></td>
+                  <td class="revenue_plan_2"></td>
+                  {% for previous_data_from in previous_report_data_from %}
+                    {% if data.department__name == previous_data_from.department__name and data.department__city == previous_data_from.department__city %}
+                    <td class="revenue_for_2022_same_period">{{previous_data_from.previous_revenue_from|floatformat:0}}</td>
+                    {% endif %}
+                  {% endfor %}
+                  <td class="revenue_2_revenue_for_2022">%</td>
+                  <td>
+                    <input type="text" name="budget{{ forloop.counter }}" class="budget" value="0" onfocus="if (this.value == '0') {this.value = '';}" onblur="if (this.value == '') {this.value = '0';}" pattern="[0-9]+" maxlength="10" /> 
+                  </td>
+                  <td class="performance">%</td>
+                </tr>
+              {% endfor %}
             {% endfor %}
-          </tbody>
+          </tbody>                 
         </table>
+        <button id="calculateButton" class="buttonR">Рассчитать</button>
       </div>
     </div>
     {% else %}
@@ -102,6 +120,132 @@
   </div>
 </div>
 </div>
+  {% endblock %}
+  {% block script %}
+  <script>
+    // Получаем все элементы таблицы с классами 'revenue', 'compary_revenue_last_month', 'revenue_compary_revenue', 'revenue_2022' и 'revenue_revenue_for_2022'
+    var revenueElements = document.getElementsByClassName('revenue');
+    var compareRevenueElements = document.getElementsByClassName('compary_revenue_last_month');
+    var revenueCompareRevenueElements = document.getElementsByClassName('revenue_compary_revenue');
+    var revenue2022Elements = document.getElementsByClassName('revenue_2022');
+    var revenueRevenueFor2022Elements = document.getElementsByClassName('revenue_revenue_for_2022');
+  
+    var revenueFromElements = document.getElementsByClassName('revenue_from');
+    var revenueFrom2022Elements = document.getElementsByClassName('revenue_for_2022_same_period');
+    var revenue2RevenueFor2022Elements = document.getElementsByClassName('revenue_2_revenue_for_2022');
+    
+    function calculate() {
+      var budgetElements = document.getElementsByClassName('budget');
+      var plan1Elements = document.getElementsByClassName('plan_1');
+      var plan2Elements = document.getElementsByClassName('plan_2');
+      var revenueBudgetElements = document.getElementsByClassName('revenue_budget');
+      var revenueBudget2Elements = document.getElementsByClassName('revenue_plan_2');
+      var performanceElements = document.getElementsByClassName('performance');
+      var firstDayNumber = parseInt(document.getElementsByClassName('first_day_number')[0].textContent);
+      var endDayNumber = parseInt(document.getElementsByClassName('end_day_number')[0].textContent);
+    
+      for (var i = 0; i < revenueElements.length; i++) {
+        var budget = parseFloat(budgetElements[i].value);
+        var revenue = parseFloat(revenueElements[i].textContent);
+        var revenue2022 = parseFloat(revenue2022Elements[i].textContent);
+        var revenueFrom = parseFloat(revenueFromElements[i].textContent);
+        var revenueBudget = 0;
+        var revenueBudget2 = 0;
+        var performance = 0
+        
+        // Расчеты
+        var plan1 = (budget / firstDayNumber) * 7;
+        var plan2 = (budget / firstDayNumber) * endDayNumber;
+        if (budget !== 0) {
+          revenueBudget = ((revenue/plan1)-1)*100;
+          performance = (revenueFrom/budget)*100;
+          revenueBudget2 = ((revenueFrom/plan2)-1)*100
+
+        } else {
+          revenueBudget = 0;
+          revenueBudget2 = 0;
+          performance = 0;
+        }
+
+        plan1Elements[i].textContent = plan1.toFixed(0);
+        plan2Elements[i].textContent = plan2.toFixed(0);
+
+        revenueBudgetElements[i].textContent = revenueBudget.toFixed(0) + '%';
+        revenueBudget2Elements[i].textContent = revenueBudget2.toFixed(0) + '%';
+        performanceElements[i].textContent = performance.toFixed(0) + '%';
+
+        if (revenueBudget < 0) {
+          revenueBudgetElements[i].style.color = 'red';
+        } else {
+          revenueBudgetElements[i].style.color = 'green';
+        }
+        if (revenueBudget2 < 0) {
+          revenueBudget2Elements[i].style.color = 'red';
+        } else {
+          revenueBudget2Elements[i].style.color = 'green';
+        }
+        
+
+      }
+    }
+    // Проходим по каждому элементу и выполняем деления
+    for (var i = 0; i < revenueElements.length; i++) {
+      var revenue = parseFloat(revenueElements[i].textContent);
+      var compareRevenue = parseFloat(compareRevenueElements[i].textContent);
+      var revenue2022 = parseFloat(revenue2022Elements[i].textContent);
+      var revenueCompareRevenue;
+      var revenueRevenueFor2022;
+      var revenueFrom = parseFloat(revenueFromElements[i].textContent);
+      var revenueFrom2022 = parseFloat(revenueFrom2022Elements[i].textContent);
+      var revenue2RevenueFor2022;
+  
+  
+      // Проверяем, чтобы значение делителя не было равно нулю
+      if (compareRevenue !== 0) {
+        revenueCompareRevenue = ((revenue / compareRevenue) - 1) * 100;
+      } else {
+        revenueCompareRevenue = 0;
+      }
+  
+      if (revenue2022 !== 0) {
+        revenueRevenueFor2022 = ((revenue / revenue2022) - 1) * 100;
+      } else {
+        revenueRevenueFor2022 = 100;
+      }
+      if (revenueFrom2022 !== 0) {
+        revenue2RevenueFor2022 = ((revenueFrom / revenueFrom2022) - 1) * 100;
+      } else {
+        revenue2RevenueFor2022 = 100;
+      }
+  
+  
+      // Записываем результаты делений в соответствующие поля
+      revenueCompareRevenueElements[i].textContent = revenueCompareRevenue.toFixed(1) + '%';
+      revenueRevenueFor2022Elements[i].textContent = revenueRevenueFor2022.toFixed(1) + '%';
+      revenue2RevenueFor2022Elements[i].textContent = revenue2RevenueFor2022.toFixed(1) + '%';
+      // Применяем стили в зависимости от значений
+      if (revenueCompareRevenue < 0) {
+        revenueCompareRevenueElements[i].style.color = 'red';
+      } else {
+        revenueCompareRevenueElements[i].style.color = 'green';
+      }
+  
+      if (revenueRevenueFor2022 < 0) {
+        revenueRevenueFor2022Elements[i].style.color = 'red';
+      } else {
+        revenueRevenueFor2022Elements[i].style.color = 'green';
+      }
+      if (revenue2RevenueFor2022 < 0) {
+        revenue2RevenueFor2022Elements[i].style.color = 'red';
+      } else {
+        revenue2RevenueFor2022Elements[i].style.color = 'green';
+      }
+    }
+    var calculateButton = document.getElementById('calculateButton');
+
+  // Добавляем обработчик события при нажатии на кнопку
+    calculateButton.addEventListener('click', calculate);
+  </script>
   {% endblock %}
   {% comment %} {% block script %}
   <script>
