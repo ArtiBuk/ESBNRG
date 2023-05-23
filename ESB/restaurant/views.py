@@ -163,7 +163,7 @@ def consolidated_report(request, report_type_id):
             'selected_restaurants': selected_restaurants,
             'report_data': report_data,
             'start_date': start_date,
-            'end_date': end_date - datetime.timedelta(days=1),
+            'end_date': end_date,
             'graph': graph,
             'report_type': report_type_id
         }
