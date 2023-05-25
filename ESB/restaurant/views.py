@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from restaurant.models import Restaurant, RestaurantCategory, Report, ReportType
 from django.core.paginator import Paginator
@@ -63,6 +63,52 @@ def search_restaurant(request):
             return render(request, 'restaurant/search.html', context)
         else:
             return render(request, 'restaurant/search.html', {'results': []})
+
+
+def build_histogram(report_data, previous_year_data):
+    # Собираем данные для гистограммы
+    categories = []
+    restaurant_names = []
+    revenue_current_year = []
+    revenue_previous_year = []
+
+    for item in report_data:
+        categories.append(item['department__category__name'])
+        restaurant_names.append(f"{item['department__name']} - {item['department__city']}")
+        revenue_current_year.append(item['revenue_selected_week'])
+
+    for item in previous_year_data:
+        revenue_previous_year.append(item['revenue_for_last_year'])
+
+    # Строим гистограмму
+    fig = go.Figure()
+
+    # Добавляем данные текущего года
+    fig.add_trace(go.Bar(
+        x=restaurant_names,
+        y=revenue_current_year,
+        name='Текущий год',
+        marker_color='rgb(55, 83, 109)'
+    ))
+
+    # Добавляем данные предыдущего года
+    fig.add_trace(go.Bar(
+        x=restaurant_names,
+        y=revenue_previous_year,
+        name='Предыдущий год',
+        marker_color='rgb(26, 118, 255)'
+    ))
+
+    # Настраиваем внешний вид гистограммы
+    fig.update_layout(
+        title='Сравнение доходов текущего и предыдущего года',
+        xaxis_title='Ресторан',
+        yaxis_title='Доход',
+        barmode='group'
+    )
+
+    # Отображаем гистограмму
+    return fig
 
 
 def generate_graph(report_data, selected_restaurants):
@@ -163,7 +209,7 @@ def consolidated_report(request, report_type_id):
             'selected_restaurants': selected_restaurants,
             'report_data': report_data,
             'start_date': start_date,
-            'end_date': end_date - datetime.timedelta(days=1),
+            'end_date': end_date,
             'graph': graph,
             'report_type': report_type_id
         }
@@ -276,6 +322,11 @@ def week_report(request, report_type_id):
                     'department__city': department[1],
                     'previous_revenue_from': 0.0,
                 })
+            histogram = build_histogram(report_data, previous_year_data)
+
+            # Преобразование графика в HTML-код
+            graph_html = histogram.to_html(full_html=False, include_plotlyjs='cdn',config={'displayModeBar': False})
+    
             context = {
                 'report_name': report_name,
                 'report_data': report_data,
@@ -290,6 +341,7 @@ def week_report(request, report_type_id):
                 'previous_report_data_from':previous_report_data_from,
                 'first_day_number':start_date_from,
                 'end_day_number':days_from_start,
+                'graph':graph_html
             }
 
             return render(request, 'restaurant/week_results.html', context)
