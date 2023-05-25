@@ -1,6 +1,31 @@
-{% extends 'restaurant/base.html' %} {% load static %} {% load humanize %} {% block scss %}
-  <link href="{% static 'css/Style_report.css' %}" rel="stylesheet" />
+{% extends 'restaurant/base.html' %} 
+{% load static %} 
+{% load humanize %} 
+{% block scss %}
+<link href="{% static 'css/Style_report.css' %}" rel="stylesheet" />
 {% endblock %} {% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-css/1.4.6/select2-bootstrap.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+<script>
+  $(document).ready(function() {
+      $('.js-example-basic-multiple').select2();
+  });
+</script>
+<script>
+  		$(".js-select2").select2({
+			closeOnSelect : false,
+			placeholder : "Placeholder",
+			// allowHtml: true,
+			allowClear: true,
+			tags: true // создает новые опции на лету
+		});
+</script>
+
 <div class="container">
   <div class="content">
     <div class="">
@@ -13,21 +38,40 @@
         </div>
 
         <form method="GET" class="forms">
-          <div style="display: flex; gap: 30px; margin-bottom: 20px;">
+          <div style="display: flex; gap: 30px; margin-bottom: 20px">
             <div class="settingsItem">
               <div class="items">
                 <label for="restaurant_ids">Рестораны:</label>
-                <select id="restaurant_ids" name="restaurant_ids" class="form-control" multiple>
+                <select
+                  class="form-select"
+                  id="restaurant_ids"
+                  name="restaurant_ids"
+                  multiple
+                >
                   {% for restaurant in restaurants %}
                     {% if restaurant in selected_restaurants %}
-                      <option value="{{ restaurant.id }}" selected>{{ restaurant.name }} ({{ restaurant.city }})</option>
+                    <option value="{{ restaurant.id }}" selected>{{ restaurant.name }} ({{ restaurant.city }})</option>
                     {% else %}
                       <option value="{{ restaurant.id }}">{{ restaurant.name }} ({{ restaurant.city }})</option>
                     {% endif %}
                   {% endfor %}
                 </select>
               </div>
-                               
+              <div class="container">
+                <div class="row">
+                <h4>checkbox</h4>
+                  <select class="js-select2" multiple="multiple">
+                    <option value="O1" data-badge="">Option1</option>
+                    <option value="O2" data-badge="">Option2</option>
+                    <option value="O3" data-badge="">Option3</option>
+                    <option value="O4" data-badge="">Option4</option>
+                    <option value="O5" data-badge="">Option5</option>
+                    <option value="O6" data-badge="">Option6</option>
+                    <option value="O7" data-badge="">Option7</option>
+                  </select>
+                </div>
+              </div>
+
               <div class="items">
                 <label for="start_date">Начало периода:</label>
                 <input
@@ -78,9 +122,8 @@
       </div>
       <div class="tableBox">
         {% if start_date and end_date %}
-        <p>Период с {{ start_date }} по {{ end_date }}</p>
-        {% endif %}
-      
+          <p>Период с {{ start_date }} по {{ end_date }}</p>
+        {% endif %} 
         {% for restaurant in selected_restaurants %}
         <h2>{{ restaurant.name }} ({{restaurant.city}})</h2>
         <table class="table">
@@ -97,32 +140,33 @@
             </tr>
           </thead>
           <tbody>
-            {% for report in report_data %}
-            {% if report.department == restaurant %}
-            <tr>
-              <td>{{ report.data|date:'Y' }}</td>
-              <td>{{ report.number_week }}</td>
-              <td>{{ report.data|date:'F' }}</td>
-              <td>{{ report.data|date:'j' }} {{ report.weekdays }}</td>
-              <td>{{ report.revenue|intcomma }}</td>
-              <td>{{ report.cost_price|intcomma }}</td>
-              <td>{{ report.number_of_checks|intcomma }}</td>
-              <td>{% widthratio report.revenue report.number_of_checks 1 %}</td>
-            </tr>
-            {% endif %}
+            {% for report in report_data %} 
+              {% if report.department == restaurant %}
+              <tr>
+                <td>{{ report.data|date:'Y' }}</td>
+                <td>{{ report.number_week }}</td>
+                <td>{{ report.data|date:'F' }}</td>
+                <td>{{ report.data|date:'j' }} {{ report.weekdays }}</td>
+                <td>{{ report.revenue|intcomma }}</td>
+                <td>{{ report.cost_price|intcomma }}</td>
+                <td>{{ report.number_of_checks|intcomma }}</td>
+                <td>{% widthratio report.revenue report.number_of_checks 1 %}</td>
+              </tr>
+              {% endif %} 
             {% endfor %}
           </tbody>
         </table>
         {% endfor %}
-      </div>          
+      </div>
       {% if report_type == 1 %} {% if graph %}
-      <div class="col-lg-12">{{ graph|safe }}</div>
+        <div class="col-lg-12">{{ graph|safe }}</div>
       {% endif %} {% endif %}
     </div>
   </div>
 </div>
-{% endblock %} {% block footer %}
+{% endblock %}
+<!-- {% block footer %}
 <footer class="py-5 bg-dark">
   <p class="m-0 text-center text-white">by ArtiBuk</p>
 </footer>
-{% endblock %}
+{% endblock %} -->

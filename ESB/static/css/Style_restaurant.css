@@ -80,7 +80,7 @@
 }
 
 footer {
-  position: static;
+  position: sticky;
   bottom: 0;
   background-color: #1f1f1f;
   color: white;
