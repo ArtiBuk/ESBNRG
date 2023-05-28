@@ -140,7 +140,7 @@
         "pk": 9,
         "fields": {
             "name": "Пепела",
-            "image": "",
+            "image": "restaurant_images/234-2344338_transparent-red-eye-meme-png-meme-symbols-png_s1MGJYh.png",
             "short_description": "",
             "category": 1,
             "city": "Норильск",
@@ -174,7 +174,7 @@
         "pk": 11,
         "fields": {
             "name": "Фуд Холл",
-            "image": "",
+            "image": "restaurant_images/156-1564261_spiderman-meme-momazo-dankmemes-spider-man-hearts-meme_282Lo6K.png",
             "short_description": "",
             "category": 1,
             "city": "Талнах",

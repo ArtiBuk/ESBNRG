@@ -1,0 +1,26 @@
+[
+    {
+        "model": "restaurant.reporttype",
+        "pk": 1,
+        "fields": {
+            "name_report": "Сводный отчет",
+            "short_description": "Информация  о выручке за выбранный период/выбранную неделю"
+        }
+    },
+    {
+        "model": "restaurant.reporttype",
+        "pk": 2,
+        "fields": {
+            "name_report": "Итоги месяца",
+            "short_description": "Подводит итоги месяца и сверяет их с планом"
+        }
+    },
+    {
+        "model": "restaurant.reporttype",
+        "pk": 3,
+        "fields": {
+            "name_report": "Результаты недели",
+            "short_description": "Показывает результаты недели и сравнивает их с неделей год назад"
+        }
+    }
+]
