@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-%(1-ejq+qsfz88t-3j05h%nvmxu1rt_)*_m4!syz-%1snnkx@y
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['10.200.101.20']
 
 
 # Application definition
@@ -96,13 +96,16 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'admin',
+#         'NAME': 'nrg',  # Имя базы данных созданной в контейнере PostgreSQL
 #         'USER': 'admin',
 #         'PASSWORD': '134685',
-#         'HOST': 'localhost',
+#         'HOST': 'db_nrg',  # Имя сервиса базы данных из docker-compose.yml
 #         'PORT': '5432',
 #     }
 # }
+
+
+
 
 
 # Password validation

@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  db_nrg:
+    container_name: db_nrg
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=134685
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=nrg
+    image: postgres:latest  # Обновляем образ PostgreSQL на последнюю версию
+
+  web_nrg:
+    # Название сервиса для Django приложения (web_nrg), можно указать произвольное
+    build:
+      context: ./  # Путь к Dockerfile Django приложения (текущая директория)
+    ports:
+      - "8000:8000"  # Проброс портов: порт контейнера : порт хоста
+    volumes:
+      - ./ESB:/app  # Проброс текущей директории с проектом Django в директорию /app внутри контейнера
+    depends_on:
+      - db_nrg  # Указываем зависимость от сервиса с базой данных (db_nrg)
+    environment:
+      - DEBUG=True  # Можете у
+
